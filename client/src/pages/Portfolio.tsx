@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
-import { PortfolioImage as ImageType, PortfolioVideo as VideoType } from "@/types"; // Import types
+import { PortfolioImage as ImageType, PortfolioVideo as VideoType } from "@/types";
+import { ExternalLink } from "lucide-react";
 
 // A helper component for the play icon
 const PlayIcon = () => (
@@ -21,12 +22,8 @@ const PlayIcon = () => (
 );
 
 const Portfolio = () => {
-  // Use specific types for your state
   const [videos, setVideos] = useState<VideoType[]>([]);
   const [images, setImages] = useState<ImageType[]>([]);
-  
-  // New state to track which video is currently playing
-  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,22 +45,68 @@ const Portfolio = () => {
   }, []);
 
   /**
-   * Extracts the YouTube video ID from an embed URL and constructs
-   * a high-quality thumbnail URL.
-   * @param embedUrl - The full YouTube embed URL.
-   * @returns The URL of the thumbnail image.
+   * Extracts the YouTube video ID from various YouTube URL formats
+   * Supports:
+   * - https://www.youtube.com/watch?v=VIDEO_ID
+   * - https://youtu.be/VIDEO_ID
+   * - https://www.youtube.com/embed/VIDEO_ID
+   * - https://www.youtube.com/v/VIDEO_ID
+   */
+  const extractYouTubeVideoId = (url: string): string | null => {
+    if (!url) return null;
+    
+    try {
+      // Handle different YouTube URL formats
+      const patterns = [
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([^&\n?#]+)/,
+        /^([a-zA-Z0-9_-]{11})$/ // Direct video ID
+      ];
+
+      for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match && match[1]) {
+          return match[1];
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.error("Error extracting YouTube video ID:", error);
+      return null;
+    }
+  };
+
+  /**
+   * Gets the high-quality thumbnail for a YouTube video
    */
   const getYouTubeThumbnail = (embedUrl: string): string => {
-    try {
-      // e.g., https://www.youtube.com/embed/VIDEO_ID -> VIDEO_ID
-      const videoId = new URL(embedUrl).pathname.split('/').pop();
-      if (!videoId) return "";
-      // Returns a standard high-quality thumbnail image
-      return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-    } catch (error) {
-      console.error("Invalid YouTube URL provided:", embedUrl);
-      return ""; // Return a fallback image or an empty string
+    const videoId = extractYouTubeVideoId(embedUrl);
+    if (!videoId) {
+      console.error("Could not extract video ID from:", embedUrl);
+      return "/placeholder-video.jpg"; // Fallback image
     }
+    // Use maxresdefault for best quality, fallback to hqdefault
+    return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  };
+
+  /**
+   * Converts any YouTube URL to a proper watch URL for opening in new tab
+   */
+  const getYouTubeWatchUrl = (embedUrl: string): string => {
+    const videoId = extractYouTubeVideoId(embedUrl);
+    if (!videoId) {
+      console.error("Could not extract video ID from:", embedUrl);
+      return embedUrl; // Return original URL as fallback
+    }
+    return `https://www.youtube.com/watch?v=${videoId}`;
+  };
+
+  /**
+   * Opens the YouTube video in a new tab
+   */
+  const handleVideoClick = (embedUrl: string) => {
+    const watchUrl = getYouTubeWatchUrl(embedUrl);
+    window.open(watchUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -81,66 +124,105 @@ const Portfolio = () => {
         
         {/* Videos Section */}
         <section className="mb-20">
-          <h2 className="text-4xl font-serif font-bold text-gradient-gold mb-8 text-center">Training Videos</h2>
+          <h2 className="text-4xl font-serif font-bold text-gradient-gold mb-8 text-center">
+            Training Videos
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {videos.map((video) => (
-              <Card key={video._id} className="overflow-hidden shadow-lg">
-                <div className="aspect-video relative group bg-black">
-                  {playingVideoId === video._id ? (
-                    // 1. If this video is playing, show the iframe with autoplay
-                    <iframe
-                      src={`${video.embedUrl}?autoplay=1`}
-                      title={video.title}
-                      className="w-full h-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  ) : (
-                    // 2. Otherwise, show the thumbnail and a play button
-                    <div
-                      className="w-full h-full cursor-pointer"
-                      onClick={() => setPlayingVideoId(video._id!)}
+            {videos.length === 0 ? (
+              <div className="col-span-full text-center py-12">
+                <p className="text-muted-foreground text-lg">No videos available yet.</p>
+              </div>
+            ) : (
+              videos.map((video) => {
+                const thumbnailUrl = getYouTubeThumbnail(video.embedUrl);
+                const videoId = extractYouTubeVideoId(video.embedUrl);
+                
+                return (
+                  <Card key={video._id} className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div 
+                      className="aspect-video relative group bg-black cursor-pointer"
+                      onClick={() => handleVideoClick(video.embedUrl)}
                     >
+                      {/* Thumbnail Image */}
                       <img
-                        src={getYouTubeThumbnail(video.embedUrl)}
+                        src={thumbnailUrl}
                         alt={`Thumbnail for ${video.title}`}
                         className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                        onError={(e) => {
+                          // Fallback to hqdefault if maxresdefault fails
+                          const target = e.target as HTMLImageElement;
+                          if (videoId && target.src.includes('maxresdefault')) {
+                            target.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                          }
+                        }}
                       />
-                      <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center transition-opacity opacity-0 group-hover:opacity-100">
-                        <PlayIcon />
+                      
+                      {/* Overlay with Play Button */}
+                      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity group-hover:bg-opacity-50">
+                        <div className="transform transition-transform group-hover:scale-110">
+                          <PlayIcon />
+                        </div>
+                      </div>
+                      
+                      {/* External Link Indicator */}
+                      <div className="absolute top-4 right-4 bg-white/90 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <ExternalLink className="w-5 h-5 text-gray-700" />
                       </div>
                     </div>
-                  )}
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-serif font-bold text-primary mb-2">{video.title}</h3>
-                  <p className="text-muted-foreground">{video.description}</p>
-
-                </div>
-              </Card>
-            ))}
+                    
+                    <div className="p-6">
+                      <h3 className="text-xl font-serif font-bold text-primary mb-2">
+                        {video.title}
+                      </h3>
+                      <p className="text-muted-foreground mb-4">{video.description}</p>
+                      <button
+                        onClick={() => handleVideoClick(video.embedUrl)}
+                        className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                      >
+                        Watch on YouTube
+                        <ExternalLink className="w-4 h-4 ml-1" />
+                      </button>
+                    </div>
+                  </Card>
+                );
+              })
+            )}
           </div>
         </section>
         
         {/* Images Section */}
         <section>
-           <h2 className="text-4xl font-serif font-bold text-gradient-gold mb-8 text-center">Our Training Sessions</h2>
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {images.map((image) => (
-              <Card key={image._id} className="overflow-hidden group shadow-lg">
-                <div className="aspect-[4/3] overflow-hidden">
-                  <img
-                    src={image.src}
-                    alt={image.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-serif font-bold text-primary mb-2">{image.title}</h3>
-                  <p className="text-muted-foreground">{image.description}</p>
-                </div>
-              </Card>
-            ))}
+          <h2 className="text-4xl font-serif font-bold text-gradient-gold mb-8 text-center">
+            Our Training Sessions
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {images.length === 0 ? (
+              <div className="col-span-full text-center py-12">
+                <p className="text-muted-foreground text-lg">No images available yet.</p>
+              </div>
+            ) : (
+              images.map((image) => (
+                <Card key={image._id} className="overflow-hidden group shadow-lg hover:shadow-xl transition-shadow duration-300">
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img
+                      src={image.src}
+                      alt={image.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/placeholder-image.jpg"; // Fallback image
+                      }}
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-serif font-bold text-primary mb-2">
+                      {image.title}
+                    </h3>
+                    <p className="text-muted-foreground">{image.description}</p>
+                  </div>
+                </Card>
+              ))
+            )}
           </div>
         </section>
       </div>

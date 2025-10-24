@@ -19,17 +19,19 @@ const app = express();
 // --- 2. PRODUCTION-READY CORS CONFIGURATION ---
 // Whitelist of allowed origins
 const allowedOrigins = [
-  'http://localhost:5173', // Your local Vite development server
-  'http://localhost:3000', // Your local Create React App server
-  'https://kishore-fashions.netlify.app' // Your deployed Netlify frontend
+  'http://localhost:5173',                 // For Vite development
+  'http://localhost:3000',                 // For Create React App development
+  'http://localhost:8080',                 // <-- THE FIX: Added your specific local origin
+  'https://kishore-fashions.netlify.app'   // Your deployed Netlify frontend
 ];
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
+    // Allow requests with no origin (like Postman, mobile apps, or curl requests)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.error(`CORS ERROR: The origin '${origin}' was blocked by the CORS policy.`);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -40,13 +42,11 @@ app.use(cors(corsOptions)); // Use the secure CORS options
 app.use(express.json()); // Middleware to parse JSON bodies
 
 // --- 3. DATABASE CONNECTION ---
-// Render will use the MONGO_URI from its Environment Variables dashboard.
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected Successfully"))
   .catch((err) => console.error("MongoDB Connection Error:", err));
 
 // --- 4. SEED ADMIN USER ON STARTUP ---
-// This is safe for production; it will only run once if the user doesn't exist.
 const seedAdminUser = async () => {
   try {
     const adminExists = await User.findOne({ email: "kishorfashions1@gmail.com" });
