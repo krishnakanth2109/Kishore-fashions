@@ -2,6 +2,24 @@ import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
+import { PortfolioImage as ImageType, PortfolioVideo as VideoType } from "@/types";
+import { ExternalLink } from "lucide-react";
+
+// A helper component for the play icon
+const PlayIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className="w-20 h-20 text-white drop-shadow-lg"
+  >
+    <path
+      fillRule="evenodd"
+      d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm14.024-.983a1.125 1.125 0 010 1.966l-5.603 3.113A1.125 1.125 0 019 15.113V8.887c0-.857.921-1.4 1.671-.983l5.603 3.113z"
+      clipRule="evenodd"
+    />
+  </svg>
+);
 
 const Portfolio = () => {
   const [videos, setVideos] = useState([]);
@@ -17,6 +35,9 @@ const Portfolio = () => {
           fetch("http://localhost:5000/api/portfolio/videos"),
           fetch("http://localhost:5000/api/portfolio/images"),
         ]);
+        if (!videosRes.ok || !imagesRes.ok) {
+          throw new Error("Failed to fetch portfolio data");
+        }
         setVideos(await videosRes.json());
         setImages(await imagesRes.json());
         console.log(videosRes.json());   
