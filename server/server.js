@@ -15,15 +15,38 @@ import contactRoutes from "./routes/contact.routes.js";
 // --- 1. INITIAL SERVER SETUP ---
 dotenv.config();
 const app = express();
-app.use(cors()); // Enable Cross-Origin Resource Sharing
+
+// --- 2. PRODUCTION-READY CORS CONFIGURATION ---
+// Whitelist of allowed origins
+const allowedOrigins = [
+  'http://localhost:5173', // Your local Vite development server
+  'http://localhost:3000', // Your local Create React App server
+  'https://kishore-fashions.netlify.app' // Your deployed Netlify frontend
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions)); // Use the secure CORS options
 app.use(express.json()); // Middleware to parse JSON bodies
 
-// --- 2. DATABASE CONNECTION ---
+// --- 3. DATABASE CONNECTION ---
+// Render will use the MONGO_URI from its Environment Variables dashboard.
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected Successfully"))
   .catch((err) => console.error("MongoDB Connection Error:", err));
 
-// --- 3. SEED ADMIN USER ON STARTUP ---
+// --- 4. SEED ADMIN USER ON STARTUP ---
+// This is safe for production; it will only run once if the user doesn't exist.
 const seedAdminUser = async () => {
   try {
     const adminExists = await User.findOne({ email: "kishorfashions1@gmail.com" });
@@ -34,28 +57,25 @@ const seedAdminUser = async () => {
       });
       console.log("Admin user has been created.");
     }
-  } catch (error) {
+  } catch (error)
+  {
     console.error("Error seeding admin user:", error);
   }
 };
 seedAdminUser();
 
-// --------------------------------------------------
-// --- 4. CONNECT API ROUTES ---
-// --------------------------------------------------
-// All requests to /api/auth will be handled by authRoutes
+// --- 5. CONNECT API ROUTES ---
 app.use("/api/auth", authRoutes);
-
-// All requests to /api/products will be handled by productRoutes
 app.use("/api/products", productRoutes);
-
-// All requests to /api/portfolio will be handled by portfolioRoutes
 app.use("/api/portfolio", portfolioRoutes);
-
-// All requests to /api/contact will be handled by contactRoutes
 app.use("/api/contact", contactRoutes);
 
+// --- 6. ROOT ROUTE FOR HEALTH CHECK ---
+app.get("/", (req, res) => {
+  res.send("Elegant Stitches API is running...");
+});
 
-// --- 5. START THE SERVER ---
+
+// --- 7. START THE SERVER ---
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server is running beautifully on port ${PORT}`));

@@ -18,7 +18,11 @@ import {
   Home,
   Settings,
   Users,
-  BarChart3
+  BarChart3,
+  LogOut,
+  User,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { Product, PortfolioImage, PortfolioVideo, ContactInfo } from "@/types";
 
@@ -121,11 +125,22 @@ const AdminForm = ({ fields, formData, setFormData, onFileChange, onSubmit, onCa
 );
 
 // Sidebar Navigation Component
-const Sidebar = ({ activeTab, setActiveTab, isMobileOpen, setIsMobileOpen }: { 
+const Sidebar = ({ 
+  activeTab, 
+  setActiveTab, 
+  isMobileOpen, 
+  setIsMobileOpen,
+  onLogout,
+  isCollapsed,
+  onToggleCollapse
+}: { 
   activeTab: string; 
   setActiveTab: (tab: string) => void;
   isMobileOpen: boolean;
   setIsMobileOpen: (open: boolean) => void;
+  onLogout: () => void;
+  isCollapsed: boolean;
+  onToggleCollapse: () => void;
 }) => {
   const menuItems = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
@@ -150,25 +165,39 @@ const Sidebar = ({ activeTab, setActiveTab, isMobileOpen, setIsMobileOpen }: {
       {/* Sidebar */}
       <div className={`
         fixed lg:static inset-y-0 left-0 z-50
-        w-64 bg-gradient-to-b from-gray-900 to-gray-800 text-white
-        transform transition-transform duration-300 ease-in-out
+        bg-gradient-to-b from-gray-900 to-gray-800 text-white
+        transform transition-all duration-300 ease-in-out
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        ${isCollapsed ? 'w-20' : 'w-64'}
       `}>
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="p-6 border-b border-gray-700">
-            <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-200 bg-clip-text text-transparent">
-                Admin Panel
-              </h1>
-              <button 
-                onClick={() => setIsMobileOpen(false)}
-                className="lg:hidden p-2 hover:bg-gray-700 rounded-lg transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
+          <div className="p-4 border-b border-gray-700">
+            <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+              {!isCollapsed && (
+                <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-200 bg-clip-text text-transparent">
+                  Admin Panel
+                </h1>
+              )}
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => setIsMobileOpen(false)}
+                  className="lg:hidden p-2 hover:bg-gray-700 rounded-lg transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={onToggleCollapse}
+                  className="hidden lg:flex p-2 hover:bg-gray-700 rounded-lg transition-colors"
+                  title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                >
+                  {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
-            <p className="text-gray-400 text-sm mt-2">Manage your website content</p>
+            {!isCollapsed && (
+              <p className="text-gray-400 text-sm mt-2">Manage your website content</p>
+            )}
           </div>
 
           {/* Navigation */}
@@ -183,32 +212,56 @@ const Sidebar = ({ activeTab, setActiveTab, isMobileOpen, setIsMobileOpen }: {
                     setIsMobileOpen(false);
                   }}
                   className={`
-                    w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left
+                    w-full flex items-center rounded-xl
                     transition-all duration-200 font-medium
+                    ${isCollapsed ? 'justify-center p-3' : 'justify-start space-x-3 px-4 py-3'}
                     ${activeTab === item.id 
                       ? 'bg-blue-600 text-white shadow-lg' 
                       : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                     }
                   `}
+                  title={isCollapsed ? item.label : ''}
                 >
                   <Icon className="w-5 h-5" />
-                  <span>{item.label}</span>
+                  {!isCollapsed && <span>{item.label}</span>}
                 </button>
               );
             })}
           </nav>
 
-          {/* Footer */}
+          {/* Footer with User Info and Logout */}
           <div className="p-4 border-t border-gray-700">
-            <div className="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                <span className="text-sm font-bold text-white">A</span>
+            {!isCollapsed ? (
+              <>
+                <div className="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg mb-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                    <User className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-white truncate">Admin User</p>
+                    <p className="text-xs text-gray-400 truncate">administrator@example.com</p>
+                  </div>
+                </div>
+                <Button
+                  onClick={onLogout}
+                  variant="outline"
+                  className="w-full justify-start bg-transparent border-gray-600 text-gray-300 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-200"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <div className="space-y-2">
+                <button
+                  onClick={onLogout}
+                  className="w-full flex items-center justify-center p-3 text-gray-300 hover:bg-red-600 hover:text-white rounded-xl transition-all duration-200"
+                  title="Logout"
+                >
+                  <LogOut className="w-5 h-5" />
+                </button>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">Admin User</p>
-                <p className="text-xs text-gray-400 truncate">administrator</p>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -225,8 +278,9 @@ const Admin = () => {
   
   const [currentForm, setCurrentForm] = useState<CurrentFormState>({ type: null, data: {}, isEditing: false });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [activeTab, setActiveTab] = useState('products');
+  const [activeTab, setActiveTab] = useState('overview');
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -249,6 +303,24 @@ const Admin = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to logout?")) {
+      // Remove auth token from localStorage
+      localStorage.removeItem('authToken');
+      
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out.",
+        className: "bg-blue-50 text-blue-800 border-blue-200"
+      });
+      
+      // Redirect to login page or home page
+      setTimeout(() => {
+        window.location.href = '/login'; // or '/'
+      }, 1000);
+    }
+  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -351,6 +423,10 @@ const Admin = () => {
   const handleCancelForm = () => {
     setCurrentForm({ type: null, data: {}, isEditing: false });
     setSelectedFile(null);
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
   };
 
   const renderContent = () => {
@@ -742,10 +818,13 @@ const Admin = () => {
         setActiveTab={setActiveTab}
         isMobileOpen={isMobileOpen}
         setIsMobileOpen={setIsMobileOpen}
+        onLogout={handleLogout}
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={toggleSidebar}
       />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col lg:ml-0">
+      <div className={`flex-1 flex flex-col transition-all duration-300 ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
         {/* Top Bar */}
         <header className="bg-white border-b border-gray-200 lg:border-l px-6 py-4 sticky top-0 z-30 shadow-sm">
           <div className="flex items-center justify-between">
@@ -766,8 +845,17 @@ const Admin = () => {
                 <Home className="w-4 h-4 mr-2" />
                 View Site
               </Button>
+              <Button 
+                onClick={handleLogout}
+                variant="outline" 
+                size="sm"
+                className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                A
+                <User className="w-4 h-4" />
               </div>
             </div>
           </div>
