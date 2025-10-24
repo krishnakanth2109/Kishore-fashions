@@ -1,82 +1,135 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import logo from "@/assets/logo.jpg";
+import { Link, useLocation } from "react-router-dom"; // MODIFIED: Imported useLocation
+import { Scissors, Menu, X, Search, ShoppingBag } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // ADDED: From old code to track the current page
+  const location = useLocation(); 
 
+  // ADDED: Navigation items from your old code
   const navItems = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
     { name: "Products", path: "/products" },
     { name: "Portfolio", path: "/portfolio" },
     { name: "Contact", path: "/contact" },
+    { name: "Services", path: "/services" },
+
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  // ADDED: Function to check if a link is active
+  const isActive = (path) => location.pathname === path;
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-soft">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-28">
-          {/* Logo Section */}
-          <Link to="/" className="flex items-center space-x-4 hover-scale">
-            <img
-              src={logo}
-              alt="Boutique Logo"
-              className="h-24 w-24 rounded-full object-cover transition-transform duration-300 hover:scale-110"
-            />
-            <span className="text-3xl font-serif font-bold text-gradient-gold tracking-wide">
-              {/* Optional brand text can go here if needed */}
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 backdrop-blur-xl ${
+      isScrolled 
+        ? 'bg-white/95 shadow-2xl border-b border-white/20' 
+        : 'bg-pink-600'
+    }`}>
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2 group">
+            <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg transform group-hover:rotate-12 transition-transform duration-500">
+              <Scissors className="w-6 h-6 text-white transform group-hover:scale-110 transition-transform duration-300" />
+            </div>
+            <span className={`text-2xl font-serif font-bold transition-all duration-300 ${
+              isScrolled ? 'text-gray-800' : 'text-white'
+            } group-hover:scale-105`}>
+              Kishore Fashions
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-10">
+          {/* MODIFIED: Desktop Menu now uses navItems from your old code */}
+          <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`font-medium transition-colors duration-300 ${
-                  isActive(item.path)
-                    ? "text-primary font-semibold"
-                    : "text-foreground hover:text-primary"
+                className={`font-semibold transition-all duration-300 hover:scale-105 relative group ${
+                  isScrolled 
+                    ? 'text-gray-700 hover:text-amber-600' 
+                    : 'text-white/90 hover:text-white'
+                } ${
+                  // Apply active styles
+                  isActive(item.path) ? (isScrolled ? 'text-amber-600' : 'text-white') : ''
                 }`}
               >
                 {item.name}
+                <span className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-amber-500 to-pink-500 transition-all duration-300 group-hover:w-full ${
+                    // Make underline visible if active
+                    isActive(item.path) ? 'w-full' : 'w-0'
+                }`}></span>
               </Link>
             ))}
           </div>
 
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center space-x-4">
+            <button className={`p-2 rounded-full transition-all duration-300 hover:scale-110 ${
+              isScrolled ? 'hover:bg-gray-100' : 'hover:bg-white/20'
+            }`}>
+              <Search className={`w-5 h-5 ${isScrolled ? 'text-gray-600' : 'text-white'}`} />
+            </button>
+            <button className={`p-2 rounded-full transition-all duration-300 hover:scale-110 ${
+              isScrolled ? 'hover:bg-gray-100' : 'hover:bg-white/20'
+            }`}>
+              <ShoppingBag className={`w-5 h-5 ${isScrolled ? 'text-gray-600' : 'text-white'}`} />
+            </button>
+            <Button className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:shadow-amber-500/25">
+              Book Consultation
+            </Button>
+          </div>
+
           {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-3 rounded-lg hover:bg-accent transition-colors"
-            aria-label="Toggle menu"
+          <button 
+            className="md:hidden p-2 transform transition-transform duration-300 hover:scale-110"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isOpen ? <X size={32} /> : <Menu size={32} />}
+            {isMobileMenuOpen ? (
+              <X className={`w-6 h-6 ${isScrolled ? 'text-gray-800' : 'text-white'}`} />
+            ) : (
+              <Menu className={`w-6 h-6 ${isScrolled ? 'text-gray-800' : 'text-white'}`} />
+            )}
           </button>
         </div>
 
-        {/* Mobile Navigation */}
-        {isOpen && (
-          <div className="md:hidden py-4 animate-slide-up">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setIsOpen(false)}
-                className={`block py-3 px-4 rounded-lg transition-colors ${
-                  isActive(item.path)
-                    ? "bg-secondary text-primary font-semibold"
-                    : "hover:bg-accent"
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
+        {/* MODIFIED: Mobile Menu now uses navItems */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl border-t border-white/20 shadow-2xl animate-in slide-in-from-top duration-300">
+            <div className="container mx-auto px-4 py-6 space-y-4">
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`block py-3 font-semibold transition-all duration-300 border-b border-gray-100 hover:translate-x-2 ${
+                    isActive(item.path) 
+                    ? 'text-amber-600' 
+                    : 'text-gray-800 hover:text-amber-600'
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+              <div className="pt-4 space-y-3">
+                <Button className="w-full bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white transform hover:scale-105 transition-all duration-300">
+                  Book Consultation
+                </Button>
+              </div>
+            </div>
           </div>
         )}
       </div>

@@ -12,6 +12,7 @@ import Admin from "./pages/Admin";
 import Login from "./pages/Login"; // Import the new Login page
 import ProtectedRoute from "./components/ProtectedRoute"; // Import the ProtectedRoute component
 import NotFound from "./pages/NotFound";
+import Services from "./pages/services";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,8 @@ const App = () => (
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/services" element={<Services/>} />
+          
 
           {/* Protected Admin Route */}
           <Route element={<ProtectedRoute />}>
