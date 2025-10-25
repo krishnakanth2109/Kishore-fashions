@@ -101,6 +101,9 @@ const About = () => {
       </div>
 
       <Navbar />
+      <br />
+      <br />
+      <br />
       
       <div className="container mx-auto px-4 py-16 relative z-10">
         {/* Header */}
@@ -112,7 +115,7 @@ const About = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-pink-300 to-rose-400 rounded-full blur-2xl opacity-20 animate-pulse"></div>
             <Sparkles className="absolute -top-6 -left-6 w-12 h-12 text-pink-400 animate-bounce" />
             <h1 className="text-6xl md:text-8xl font-serif font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 bg-clip-text text-transparent mb-6 relative z-10">
-              About Elegant Stitches
+              About Kishor Fashions
             </h1>
             <Sparkles className="absolute -bottom-6 -right-6 w-12 h-12 text-rose-400 animate-bounce delay-1000" />
           </div>

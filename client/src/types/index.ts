@@ -1,3 +1,5 @@
+// src/types/index.ts
+
 export interface Product {
   _id?: string;
   title: string;
@@ -21,11 +23,18 @@ export interface PortfolioVideo {
 }
 
 export interface ContactInfo {
-  _id?: string;
   phone1?: string;
   phone2?: string;
   email1?: string;
   email2?: string;
   address?: string;
   whatsappNumber?: string;
+}
+
+export type FormDataType = Product | PortfolioImage | PortfolioVideo | Partial<ContactInfo>;
+
+export interface CurrentFormState {
+  type: string | null;
+  data: FormDataType;
+  isEditing: boolean;
 }
