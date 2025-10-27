@@ -3,27 +3,13 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { PortfolioImage as ImageType, PortfolioVideo as VideoType } from "@/types";
-import { ExternalLink } from "lucide-react";
 
-// A helper component for the play icon
-const PlayIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    className="w-20 h-20 text-white drop-shadow-lg"
-  >
-    <path
-      fillRule="evenodd"
-      d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm14.024-.983a1.125 1.125 0 010 1.966l-5.603 3.113A1.125 1.125 0 019 15.113V8.887c0-.857.921-1.4 1.671-.983l5.603 3.113z"
-      clipRule="evenodd"
-    />
-  </svg>
-);
+// Use the environment variable for the API base URL, with a fallback for local development
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 const Portfolio = () => {
-  const [videos, setVideos] = useState([]);
-  const [images, setImages] = useState([]);
+  const [videos, setVideos] = useState<VideoType[]>([]);
+  const [images, setImages] = useState<ImageType[]>([]);
   const [activeFilter, setActiveFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
@@ -32,15 +18,14 @@ const Portfolio = () => {
       try {
         setLoading(true);
         const [videosRes, imagesRes] = await Promise.all([
-          fetch("http://localhost:5000/api/portfolio/videos"),
-          fetch("http://localhost:5000/api/portfolio/images"),
+          fetch(`${API_BASE_URL}/api/portfolio/videos`),
+          fetch(`${API_BASE_URL}/api/portfolio/images`),
         ]);
         if (!videosRes.ok || !imagesRes.ok) {
           throw new Error("Failed to fetch portfolio data");
         }
         setVideos(await videosRes.json());
         setImages(await imagesRes.json());
-        console.log(videosRes.json());   
       } catch (error) {
         console.error("Failed to fetch portfolio data:", error);
       } finally {
@@ -55,7 +40,7 @@ const Portfolio = () => {
   
   const filteredImages = activeFilter === "all" 
     ? images 
-    : images.filter(img => img.category === activeFilter);
+    : images.filter(img => (img as any).category === activeFilter);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white">
@@ -184,7 +169,7 @@ const Portfolio = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div className="absolute bottom-4 left-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-200">
                       <span className="bg-rose-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        {image.category || "fashion"}
+                        {(image as any).category || "fashion"}
                       </span>
                     </div>
                   </div>

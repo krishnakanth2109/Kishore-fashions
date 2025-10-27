@@ -5,10 +5,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Phone, Mail, MapPin, Clock, Send, Sparkles } from "lucide-react";
+import { Phone, Mail, MapPin, Send, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ContactInfo } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
+
+// Use the environment variable for the API base URL, with a fallback for local development
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -20,7 +23,7 @@ const Contact = () => {
   useEffect(() => {
     const fetchContactInfo = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/contact/info");
+        const res = await fetch(`${API_BASE_URL}/api/contact/info`);
         const data: ContactInfo = await res.json();
         setContactInfo(data);
       } catch (error) {
@@ -35,7 +38,7 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch("http://localhost:5000/api/contact/message", {
+      const response = await fetch(`${API_BASE_URL}/api/contact/message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -74,7 +77,7 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100">
       <Navbar />
-<br />
+      <br />
       <br />
       
       {/* Hero Section */}
@@ -240,7 +243,6 @@ const Contact = () => {
                     { icon: Phone, title: "Call Us", content: `${contactInfo.phone1}\n${contactInfo.phone2}`, color: "from-blue-500 to-blue-600" },
                     { icon: Mail, title: "Email Us", content: `${contactInfo.email1}\n${contactInfo.email2}`, color: "from-purple-500 to-purple-600" },
                     { icon: MapPin, title: "Visit Us", content: contactInfo.address, color: "from-rose-500 to-rose-600" },
-
                   ].map((item, index) => (
                     <motion.div
                       key={item.title}
@@ -280,9 +282,6 @@ const Contact = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-
-            {/* Additional Info */}
-      
           </motion.div>
         </div>
       </section>
