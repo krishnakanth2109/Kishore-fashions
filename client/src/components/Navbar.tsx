@@ -38,13 +38,11 @@ const Navbar = () => {
         ? 'bg-white/95 shadow-2xl border-b border-white/20' 
         : 'bg-pink-600'
     }`}>
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto ">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg transform group-hover:rotate-12 transition-transform duration-500">
-              <Scissors className="w-6 h-6 text-white transform group-hover:scale-110 transition-transform duration-300" />
-            </div>
+         <img src="https://image2url.com/images/1761394505496-0c9ac8ba-6578-4232-a256-e60d5620f3b9.png" width={100} alt="" />
             <span className={`text-2xl font-serif font-bold transition-all duration-300 ${
               isScrolled ? 'text-gray-800' : 'text-white'
             } group-hover:scale-105`}>
@@ -78,16 +76,7 @@ const Navbar = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            <button className={`p-2 rounded-full transition-all duration-300 hover:scale-110 ${
-              isScrolled ? 'hover:bg-gray-100' : 'hover:bg-white/20'
-            }`}>
-              <Search className={`w-5 h-5 ${isScrolled ? 'text-gray-600' : 'text-white'}`} />
-            </button>
-            <button className={`p-2 rounded-full transition-all duration-300 hover:scale-110 ${
-              isScrolled ? 'hover:bg-gray-100' : 'hover:bg-white/20'
-            }`}>
-              <ShoppingBag className={`w-5 h-5 ${isScrolled ? 'text-gray-600' : 'text-white'}`} />
-            </button>
+    
             <Button className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:shadow-amber-500/25">
               Book Consultation
             </Button>
@@ -102,7 +91,7 @@ const Navbar = () => {
               <X className={`w-6 h-6 ${isScrolled ? 'text-gray-800' : 'text-white'}`} />
             ) : (
               <Menu className={`w-6 h-6 ${isScrolled ? 'text-gray-800' : 'text-white'}`} />
-            )}
+            )} 
           </button>
         </div>
 
