@@ -103,7 +103,7 @@ const Contact = () => {
             transition={{ delay: 0.4, duration: 0.7 }}
             className="text-xl text-rose-700 max-w-2xl mx-auto leading-relaxed"
           >
-            Get in touch with our master tailors and let's bring your fashion dreams to life with perfect stitching and design.
+            Book your consultation with our expert designers and experience personalized stitching crafted to match your unique style and elegance.
           </motion.p>
           <motion.div 
             initial={{ width: 0 }}

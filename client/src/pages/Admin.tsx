@@ -14,6 +14,7 @@ import { ProductsManager } from "@/components/admin/ProductsManager";
 import { PortfolioManager } from "@/components/admin/PortfolioManager";
 import { VideosManager } from "@/components/admin/VideosManager";
 import { ContactManager } from "@/components/admin/ContactManager";
+import ContactTable from "@/components/admin/Formdata";
 
 const API_URL = "http://localhost:5000/api";
 
@@ -168,8 +169,11 @@ const Admin = () => {
         return <VideosManager videos={videos} {...commonProps} />;
       case 'contact':
         return <ContactManager contactInfo={contactInfo} setContactInfo={setContactInfo} />;
+      case 'form':
+        return <ContactTable/>;
       default:
         return <DashboardOverview products={products} portfolioImages={portfolioImages} videos={videos} setActiveTab={setActiveTab} />;
+
     }
   };
 

@@ -144,7 +144,7 @@ const About = () => {
                   </div>
                   <div className="space-y-6 text-lg">
                     <p className="text-gray-700 leading-relaxed bg-white/60 p-6 rounded-2xl border-l-4 border-pink-400 hover:border-l-8 transition-all duration-500 hover:scale-105 transform hover:shadow-lg animate-paragraph opacity-0 translate-x-4 blur-sm transition-all duration-700">
-                      <strong className="text-pink-500 text-xl bg-gradient-to-r from-pink-100 to-pink-50 px-2 py-1 rounded">Kishore Kumar</strong>, the visionary behind Elegant Stitches, 
+                      <strong className="text-pink-500 text-xl bg-gradient-to-r from-pink-100 to-pink-50 px-2 py-1 rounded">Kishor Kumar</strong>, the visionary behind Elegant Stitches, 
                       brings over <span className="text-rose-500 font-semibold bg-rose-50 px-1 rounded">15 years</span> of expertise in fashion design and boutique management. 
                       His passion for empowering women through skill development has transformed 
                       countless lives across the nation.
@@ -158,7 +158,7 @@ const About = () => {
                       </p>
                       <div className="flex items-center space-x-4 pt-4 mt-4 border-t border-pink-200">
                         <Award className="w-6 h-6 text-rose-500" />
-                        <span className="text-gray-600 font-semibold">- Kishore Kumar, Founder & CEO</span>
+                        <span className="text-gray-600 font-semibold">- Kishor Kumar, Founder & CEO</span>
                       </div>
                     </div>
                   </div>
@@ -168,7 +168,7 @@ const About = () => {
                     <div className="absolute -inset-6 bg-gradient-to-r from-pink-300 via-rose-400 to-pink-500 rounded-3xl blur-2xl opacity-50 group-hover:opacity-70 transition duration-1000 animate-pulse"></div>
                     <div className="relative">
                       <img 
-                        src="https://limited-plum-2sqgcjujmh.edgeone.app/IMG-20251023-WA0010.jpg" 
+                        src="https://image2url.com/images/1761557853213-99509f6b-ecb4-49a2-a17a-eb17fb833d80.jpg" 
                         alt="Kishore Kumar - Founder of Elegant Stitches"
                         className="w-96 h-96 rounded-2xl object-cover shadow-2xl border-4 border-white transform group-hover:scale-105 group-hover:rotate-2 transition-all duration-500"
                         onError={(e) => {
@@ -177,7 +177,7 @@ const About = () => {
                       />
                       <div className="absolute -bottom-6 -right-6 bg-gradient-to-r from-pink-400 to-rose-500 text-white px-6 py-3 rounded-full shadow-2xl transform group-hover:scale-110 transition-transform duration-300">
                         <Award className="w-5 h-5 inline mr-2" />
-                        <span className="font-bold">Founder & Mentor</span>
+                        <span className="font-bold">Founder </span>
                       </div>
                     </div>
                   </div>

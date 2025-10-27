@@ -13,7 +13,7 @@ const Services = () => {
       title: 'Dress & Pant Models',
       items: [
         'Punjabi Dress', 'Salwar Pant', 'Chudidar Pant', 'Umbrella Frock',
-        'A-Line Kurti', 'Palazzo Pant'
+        'A-Line Kurti',
       ]
     },
     {
@@ -21,7 +21,7 @@ const Services = () => {
       title: 'Blouse Designs',
       items: [
         'Boat Neck Blouse', 'Prince Cut Blouse', 'Katori Blouse', 'Cross Cut Blouse',
-        'Collar Neck Blouse', 'High Neck Blouse', 'Shoulder-less Blouse', 'Fish Cut Blouse'
+        'Collar Neck Blouse', 'High Neck Blouse',
       ]
     },
     {
@@ -40,13 +40,7 @@ const Services = () => {
         'Piping All Models'
       ]
     },
-    {
-      id: 'necks',
-      title: 'Neck Designs',
-      items: [
-        'Regular Neck', 'Boat Neck', 'Collar Neck', 'Coat Neck'
-      ]
-    }
+
   ];
 
   const batchTimings = [
@@ -64,7 +58,7 @@ const Services = () => {
   ];
 
   const handleEnrollmentClick = () => {
-    const phoneNumber = "919876543210";
+    const phoneNumber = "919515174064";
     const message = "Hello! I'm interested in enrolling in Kishor Fashion Tailoring Class. Please provide more details about the courses and admission process.";
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
@@ -225,49 +219,7 @@ const Services = () => {
             Comprehensive Course Coverage
           </motion.h2>
 
-          {/* Category Filters */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="flex flex-wrap gap-3 justify-center mb-8"
-          >
-            <button
-              onClick={() => setActiveCategory('all')}
-              style={{
-                padding: '0.75rem 1.5rem',
-                borderRadius: '25px',
-                border: '2px solid #f48fb1',
-                background: activeCategory === 'all' ? '#f48fb1' : 'transparent',
-                color: activeCategory === 'all' ? 'white' : '#d81b60',
-                fontFamily: "'Poppins', sans-serif",
-                fontWeight: '500',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease'
-              }}
-            >
-              All Categories
-            </button>
-            {courseCategories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setActiveCategory(category.id)}
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  borderRadius: '25px',
-                  border: '2px solid #f48fb1',
-                  background: activeCategory === category.id ? '#f48fb1' : 'transparent',
-                  color: activeCategory === category.id ? 'white' : '#d81b60',
-                  fontFamily: "'Poppins', sans-serif",
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                {category.title}
-              </button>
-            ))}
-          </motion.div>
-
+ 
           {/* Course Items Grid */}
           <div style={{
             display: 'grid',

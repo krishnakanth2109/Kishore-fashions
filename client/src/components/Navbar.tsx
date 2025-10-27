@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom"; // MODIFIED: Imported useLocation
+import { Link, useLocation } from "react-router-dom";
 import { Scissors, Menu, X, Search, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -7,10 +7,8 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
-  // ADDED: From old code to track the current page
   const location = useLocation(); 
 
-  // ADDED: Navigation items from your old code
   const navItems = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
@@ -18,10 +16,8 @@ const Navbar = () => {
     { name: "Portfolio", path: "/portfolio" },
     { name: "Contact", path: "/contact" },
     { name: "Services", path: "/services" },
-
   ];
 
-  // ADDED: Function to check if a link is active
   const isActive = (path) => location.pathname === path;
 
   useEffect(() => {
@@ -46,11 +42,11 @@ const Navbar = () => {
             <span className={`text-2xl font-serif font-bold transition-all duration-300 ${
               isScrolled ? 'text-gray-800' : 'text-white'
             } group-hover:scale-105`}>
-              Kishore Fashions
+              Kishor Fashions
             </span>
           </Link>
 
-          {/* MODIFIED: Desktop Menu now uses navItems from your old code */}
+          {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
               <Link
@@ -61,13 +57,11 @@ const Navbar = () => {
                     ? 'text-gray-700 hover:text-amber-600' 
                     : 'text-white/90 hover:text-white'
                 } ${
-                  // Apply active styles
                   isActive(item.path) ? (isScrolled ? 'text-amber-600' : 'text-white') : ''
                 }`}
               >
                 {item.name}
                 <span className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-amber-500 to-pink-500 transition-all duration-300 group-hover:w-full ${
-                    // Make underline visible if active
                     isActive(item.path) ? 'w-full' : 'w-0'
                 }`}></span>
               </Link>
@@ -76,10 +70,12 @@ const Navbar = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
-    
-            <Button className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:shadow-amber-500/25">
-              Book Consultation
-            </Button>
+            {/* MODIFIED: Wrapped Button with Link */}
+            <Link to="/contact">
+              <Button className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:shadow-amber-500/25">
+                Book Consultation
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -95,7 +91,7 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* MODIFIED: Mobile Menu now uses navItems */}
+        {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl border-t border-white/20 shadow-2xl animate-in slide-in-from-top duration-300">
             <div className="container mx-auto px-4 py-6 space-y-4">
@@ -114,9 +110,12 @@ const Navbar = () => {
                 </Link>
               ))}
               <div className="pt-4 space-y-3">
-                <Button className="w-full bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white transform hover:scale-105 transition-all duration-300">
-                  Book Consultation
-                </Button>
+                {/* MODIFIED: Wrapped Button with Link and added onClick to close menu */}
+                <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Button className="w-full bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white transform hover:scale-105 transition-all duration-300">
+                    Book Consultation
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

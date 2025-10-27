@@ -10,17 +10,17 @@ const boutiqueImages = {
   hero1: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=800&fit=crop",
   hero2: "https://image2url.com/images/1761283351120-d7c6b7a3-63bc-4be8-bdce-5f739d723a0c.png",
   hero3: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200&h=800&fit=crop",
-  collection1: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&h=800&fit=crop",
-  collection2: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600&h=800&fit=crop",
-  collection3: "https://images.unsplash.com/photo-1506634572416-48cdfe530110?w=600&h=800&fit=crop",
-  collection4: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=600&h=800&fit=crop",
+  collection1: "https://img1.wsimg.com/isteam/stock/498/:/cr=t:0%25,l:5.63%25,w:88.75%25,h:100%25/rs=w:1240,h:932.3308270676691,cg:true",
+  collection2: "https://needlesnthimbles.com/wp-content/uploads/2024/03/15837.jpg",
+  collection3: "https://www.aprilblooms.com/cdn/shop/articles/Boutique_Dresses_for_Women.jpg?v=1698055404",
+  collection4: "https://www.weddingplz.com/images/portfolio/main/5/18800/Krushita-Tailoring-Shop-8453-1-weddingplz.jpg",
   about: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=1000&h=700&fit=crop",
   workshop: "https://images.unsplash.com/photo-1604644401890-0bd678c83788?w=1000&h=700&fit=crop",
-  fabric: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5b?w=1000&h=700&fit=crop",
-  team1: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop&crop=face",
-  team2: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4b?w=400&h=400&fit=crop&crop=face",
-  team3: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
-  team4: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=400&h=400&fit=crop&crop=face"
+  fabric: "https://img.freepik.com/premium-photo/tailor-stitching-making-clothes-with-sewing-machine-fashion-design-creative-workshop-serious-man-working-handmade-trendy-stylish-clothing-fashionable-boutique-store_590464-67850.jpg",
+  // team1: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop&crop=face",
+  // team2: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4b?w=400&h=400&fit=crop&crop=face",
+  // team3: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
+  // team4: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=400&h=400&fit=crop&crop=face"
 };
 
 const features = [
@@ -60,33 +60,33 @@ const features = [
 
 const collections = [
   {
-    name: "Evening Couture",
-    description: "Exquisite gowns for red carpet events and special occasions",
-    price: "Starting at $1,200",
+    name: "Our Stitching Services",
+    description: "Custom-made outfits designed with precision, style, and perfect fitting.",
+  
     image: boutiqueImages.collection1,
     gradient: "from-purple-600 to-pink-600",
     items: "45+ Designs"
   },
   {
-    name: "Executive Collection",
-    description: "Power dressing redefined with luxury fabrics and impeccable fits",
-    price: "Starting at $800",
+    name: "Designer Stitching Training",
+    description: "Learn professional stitching and design skills from expert tailors.",
+  
     image: boutiqueImages.collection2,
     gradient: "from-gray-700 to-gray-900",
-    items: "32+ Designs"
+    items: "32+ Students"
   },
   {
-    name: "Casual Elegance",
-    description: "Everyday luxury with exceptional comfort and sophisticated styling",
-    price: "Starting at $450",
+    name: "Luxury Couture & Products",
+    description: "Explore elegant designs that blend modern trends with timeless fashion",
+  
     image: boutiqueImages.collection3,
     gradient: "from-rose-600 to-orange-600",
     items: "67+ Designs"
   },
   {
-    name: "Bridal Atelier",
-    description: "Dream wedding dresses crafted with romance and timeless elegance",
-    price: "Starting at $2,500",
+    name: "Our Signature Collections",
+    description: "Experience premium craftsmanship and high-end fashion for every occasion",
+
     image: boutiqueImages.collection4,
     gradient: "from-white to-rose-100",
     items: "28+ Designs"
@@ -95,27 +95,27 @@ const collections = [
 
 const testimonials = [
   {
-    name: "Elena Rodriguez",
+    name: "M.Venu Prasad",
     role: "Fashion Director, Vogue",
     content: "The attention to detail and quality of craftsmanship is unparalleled. Each piece feels like wearable art.",
     rating: 5,
-    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+    image: "https://img.freepik.com/premium-photo/face-young-handsome-indian-man_251136-20685.jpg",
     beforeAfter: "Client for 5+ years"
   },
   {
-    name: "Marcus Chen",
+    name: "P.Vanket Ramana Reddy",
     role: "Celebrity Stylist",
     content: "Working with this boutique transformed how I approach red carpet styling. The quality is exceptional.",
     rating: 5,
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+    image: "https://st.depositphotos.com/1011643/4430/i/950/depositphotos_44309759-stock-photo-young-indian-man-outdoors.jpg",
     beforeAfter: "30+ celebrity clients dressed"
   },
   {
-    name: "Sophie Williams",
+    name: "Bhavana Sharma",
     role: "Luxury Fashion Influencer",
     content: "From custom fittings to final delivery, the experience is nothing short of extraordinary. True luxury.",
     rating: 5,
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+    image: "https://live.staticflickr.com/3741/8875025219_fa4ab2ceb4_z.jpg",
     beforeAfter: "1M+ followers in fashion"
   }
 ];
@@ -227,10 +227,12 @@ const HeroCarousel = () => {
                   {slide.description}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 pt-6">
-                  <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-6 text-lg font-semibold shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 hover:rotate-1">
-                    Explore Collection
-                    <ArrowRight className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
-                  </Button>
+<Link to="/products">
+  <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-6 text-lg font-semibold shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 hover:rotate-1">
+    Explore Collection
+    <ArrowRight className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
+  </Button>
+</Link>
       
                 </div>
               </div>
@@ -413,9 +415,7 @@ const Home = () => {
                         </p>
                       </div>
                       <div className="text-right transform group-hover:translate-x-[-4px] transition-transform duration-300">
-                        <div className="text-2xl font-bold text-amber-300 mb-1">
-                          {collection.price}
-                        </div>
+                
                         <div className="text-sm text-white/80">
                           {collection.items}
                         </div>
@@ -431,10 +431,12 @@ const Home = () => {
                 
                 <div className="p-6">
                   <div className="flex items-center justify-between">
+                    <Link to="/products">
                     <Button className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white shadow-lg transform group-hover:scale-105 group-hover:rotate-1 transition-all duration-300">
-                      View Collection
+                      View Our Collection
                       <ArrowRight className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
                     </Button>
+                    </Link>
                     <div className="flex items-center space-x-2 text-gray-600 transform group-hover:scale-105 transition-transform duration-300">
                       <span className="text-sm font-semibold">Custom Orders</span>
                       <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -451,7 +453,7 @@ const Home = () => {
       </section>
 
       {/* Creative Team Section */}
-      <section 
+      {/* <section 
         ref={el => sectionRefs.current[2] = el}
         className="relative py-24 bg-gradient-to-br from-gray-50 to-white"
       >
@@ -518,12 +520,12 @@ const Home = () => {
                 </div>
 
                 {/* Hover shine effect */}
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+                {/* <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div> */}
+              {/* </div> */}
+            {/* ))} */}
+          {/* </div> */}
+        {/* </div> */}
+      {/* </section> */} 
 
       {/* Enhanced Features with Images */}
       <section 
@@ -589,7 +591,7 @@ const Home = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                     <div className="absolute bottom-4 left-4 text-white font-semibold transform hover:translate-x-1 transition-transform duration-300">
-                      Luxury Fabrics
+                      Handmade Fabrics
                     </div>
                   </div>
                 </div>
@@ -613,7 +615,7 @@ const Home = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                     <div className="absolute bottom-4 left-4 text-white font-semibold transform hover:translate-x-1 transition-transform duration-300">
-                      Design Process
+                      Our Luxury Fabrics
                     </div>
                   </div>
                 </div>
@@ -635,7 +637,7 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
             <h2 className="text-5xl md:text-6xl font-serif font-bold text-gradient-gold mb-6 transform hover:scale-105 transition-transform duration-500">
-              Client <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Stories</span>
+              Our <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Creative Team</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto transform hover:translate-y-1 transition-transform duration-300">
               Discover why discerning clients choose Élégance for their most important moments
@@ -683,10 +685,7 @@ const Home = () => {
                   {testimonial.beforeAfter}
                 </div>
 
-                {/* Floating badge */}
-                <div className="absolute -top-3 -right-3 bg-gradient-to-r from-amber-500 to-pink-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg transform group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300">
-                  Verified
-                </div>
+           
               </div>
             ))}
           </div>
@@ -724,19 +723,14 @@ const Home = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12">
-            <Link to="/consultation">
+            <Link to="/products">
               <Button size="lg" className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white shadow-2xl transform hover:scale-105 hover:rotate-1 transition-all duration-300 font-bold text-lg px-8 py-6">
                 <Sparkles className="w-5 h-5 mr-3 transform group-hover:scale-110 transition-transform duration-300" />
                 Book Private Consultation
                 <ArrowRight className="w-5 h-5 ml-3 transform group-hover:translate-x-1 transition-transform duration-300" />
               </Button>
             </Link>
-            <Link to="/collections">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 backdrop-blur-sm font-semibold text-lg px-8 py-6 transform hover:scale-105 transition-all duration-300">
-                <Shield className="w-5 h-5 mr-3 transform group-hover:scale-110 transition-transform duration-300" />
-                View Lookbook
-              </Button>
-            </Link>
+
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto text-white/60">

@@ -2,7 +2,7 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Package, Image, Video, Contact, TrendingUp, Users, Eye } from "lucide-react";
+import { Package, Image, Video, Contact, TrendingUp, Eye } from "lucide-react";
 import { Product, PortfolioImage, PortfolioVideo } from "@/types";
 
 interface DashboardOverviewProps {
@@ -18,14 +18,14 @@ export const DashboardOverview = ({ products, portfolioImages, videos, setActive
       <div className="flex items-center justify-between">
         <CardTitle className="text-2xl font-bold text-white">Dashboard Overview</CardTitle>
         <div className="flex items-center space-x-2 text-white/90">
-          <Eye className="w-5 h-5" />
-          <span className="text-sm">Live Preview</span>
+      
+         
         </div>
       </div>
     </CardHeader>
     <CardContent className="p-6">
       {/* Stats Grid with Enhanced Design */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="relative bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <div className="flex items-center justify-between">
             <div>
@@ -75,23 +75,6 @@ export const DashboardOverview = ({ products, portfolioImages, videos, setActive
             </div>
           </div>
           <div className="absolute top-0 right-0 w-16 h-16 bg-purple-500/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-        </div>
-
-        <div className="relative bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm font-medium mb-1">Total Items</p>
-              <p className="text-3xl font-bold text-gray-800">{products.length + portfolioImages.length + videos.length}</p>
-              <div className="flex items-center mt-2 text-blue-500 text-xs">
-                <Users className="w-3 h-3 mr-1" />
-                <span>All content</span>
-              </div>
-            </div>
-            <div className="p-3 bg-orange-500/10 rounded-xl">
-              <Contact className="w-6 h-6 text-orange-600" />
-            </div>
-          </div>
-          <div className="absolute top-0 right-0 w-16 h-16 bg-orange-500/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
         </div>
       </div>
 
@@ -145,27 +128,6 @@ export const DashboardOverview = ({ products, portfolioImages, videos, setActive
             <span className="text-sm font-semibold text-gray-700">Update Contact</span>
             <div className="absolute inset-0 border-2 border-transparent group-hover:border-orange-200 rounded-2xl transition-all duration-300"></div>
           </Button>
-        </div>
-      </div>
-
-      {/* Recent Activity Section */}
-      <div className="mt-6 bg-white/60 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-lg">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h3>
-        <div className="space-y-3">
-          <div className="flex items-center justify-between p-3 bg-blue-50/50 rounded-xl">
-            <div className="flex items-center space-x-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span className="text-sm text-gray-700">New product added</span>
-            </div>
-            <span className="text-xs text-gray-500">2 min ago</span>
-          </div>
-          <div className="flex items-center justify-between p-3 bg-green-50/50 rounded-xl">
-            <div className="flex items-center space-x-3">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span className="text-sm text-gray-700">Portfolio image updated</span>
-            </div>
-            <span className="text-xs text-gray-500">1 hour ago</span>
-          </div>
         </div>
       </div>
     </CardContent>

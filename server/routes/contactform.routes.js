@@ -9,7 +9,7 @@ const router = express.Router();
 // This part of the file remains the same
 router.get("/info", async (req, res) => {
   try {
-    const info = await ContactInfo.findOne({});
+    const info = await ContactInfo.find({});
     res.status(200).json(info || {});
   } catch (error) {
     res.status(500).json({ message: "Error fetching contact info", error: error.message });

@@ -312,7 +312,7 @@ const Products = () => {
         </motion.div>
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {[...Array(8)].map((_, i) => (
+            {[...Array(4)].map((_, i) => (
               <motion.div
                 key={i}
                 variants={itemVariants}
@@ -426,7 +426,7 @@ const Products = () => {
                 transition={{ duration: 0.6, delay: 0.4 }}
                 whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(72, 187, 120, 0.3)" }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => handleWhatsAppEnquiry({ title: "Custom Design Consultation", price: 0, description: "I'm interested in custom design services" })}
+                onClick={() => handleWhatsAppEnquiry({ title: "Custom Design Consultation", price: "Lets Disscuss", description: "I'm interested in custom design services" })}
                 className="px-12 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-2xl font-semibold text-lg hover:shadow-xl transition-all duration-300 shadow-2xl flex items-center gap-3 mx-auto"
             >
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
