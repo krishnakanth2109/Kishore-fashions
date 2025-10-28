@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  BarChart3, Package, Image, Video, Contact, Users, Settings, LogOut, User, X, ChevronLeft, ChevronRight, FileText
+  BarChart3, Package, Image, Video, Contact, LogOut, User, X, ChevronLeft, ChevronRight, FileText
 } from "lucide-react";
 
 interface SidebarProps {
@@ -22,8 +22,8 @@ export const Sidebar = ({ activeTab, setActiveTab, isMobileOpen, setIsMobileOpen
     { id: 'portfolio', label: 'Portfolio', icon: Image },
     { id: 'videos', label: 'Videos', icon: Video },
     { id: 'contact', label: 'Contact Info', icon: Contact },
-    { id: 'form', label: 'Requested form', icon: FileText },
-    
+    // THE FIX: Changed the ID from 'form' to 'messages' to match Admin.tsx
+    { id: 'messages', label: 'Requested form', icon: FileText }, 
   ];
 
   return (
@@ -45,7 +45,7 @@ export const Sidebar = ({ activeTab, setActiveTab, isMobileOpen, setIsMobileOpen
             {!isCollapsed && <p className="text-gray-400 text-sm mt-2">Manage your website content</p>}
           </div>
 
-          {/* Navigation Items - Scrollable if needed */}
+          {/* Navigation Items */}
           <nav className="flex-1 overflow-y-auto p-4 space-y-2">
             {menuItems.map((item) => {
               const Icon = item.icon;
@@ -63,7 +63,7 @@ export const Sidebar = ({ activeTab, setActiveTab, isMobileOpen, setIsMobileOpen
             })}
           </nav>
 
-          {/* Footer Section - Always at bottom */}
+          {/* Footer Section */}
           <div className="flex-shrink-0 p-4 border-t border-gray-700 mt-auto">
             {!isCollapsed ? (
               <>

@@ -14,9 +14,10 @@ import { ProductsManager } from "@/components/admin/ProductsManager";
 import { PortfolioManager } from "@/components/admin/PortfolioManager";
 import { VideosManager } from "@/components/admin/VideosManager";
 import { ContactManager } from "@/components/admin/ContactManager";
-import ContactTable from "@/components/admin/Formdata";
+// This import will now work because you renamed the file to ContactTable.tsx
+import ContactTable from "@/components/admin/ContactTable";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 const Admin = () => {
   const { toast } = useToast();
@@ -169,11 +170,11 @@ const Admin = () => {
         return <VideosManager videos={videos} {...commonProps} />;
       case 'contact':
         return <ContactManager contactInfo={contactInfo} setContactInfo={setContactInfo} />;
-      case 'form':
-        return <ContactTable/>;
+      // The case name now correctly matches the tab name.
+      case 'messages':
+        return <ContactTable />;
       default:
         return <DashboardOverview products={products} portfolioImages={portfolioImages} videos={videos} setActiveTab={setActiveTab} />;
-
     }
   };
 
@@ -189,7 +190,7 @@ const Admin = () => {
         onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
 
-      <div className={`flex-1 flex flex-col transition-all duration-300 `}>
+      <div className={`flex-1 flex flex-col transition-all duration-300`}>
         <DashboardHeader
           activeTab={activeTab}
           setIsMobileOpen={setIsMobileOpen}
