@@ -98,7 +98,7 @@ const testimonials = [
     name: "M.Venu Prasad",
     role: "Fashion Director, Vogue",
     content: "The attention to detail and quality of craftsmanship is unparalleled. Each piece feels like wearable art.",
-    rating: 5,
+
     image: "https://img.freepik.com/premium-photo/face-young-handsome-indian-man_251136-20685.jpg",
     beforeAfter: "Client for 5+ years"
   },
@@ -127,40 +127,7 @@ const stats = [
   { number: "24/7", label: "Concierge Service", icon: Clock, suffix: "Support" }
 ];
 
-const creativeTeam = [
-  {
-    name: "Isabelle Laurent",
-    role: "Creative Director",
-    image: boutiqueImages.team1,
-    description: "Former head designer at Chanel with 15+ years in haute couture",
-    specialties: ["Evening Wear", "Bridal", "Red Carpet"],
-    social: { instagram: "#", linkedin: "#" }
-  },
-  {
-    name: "Alexander Chen",
-    role: "Master Tailor",
-    image: boutiqueImages.team2,
-    description: "Fourth-generation tailor specializing in bespoke menswear",
-    specialties: ["Bespoke Suiting", "Traditional Craftsmanship", "Fit Engineering"],
-    social: { instagram: "#", linkedin: "#" }
-  },
-  {
-    name: "Sophia Martinez",
-    role: "Textile Artist",
-    image: boutiqueImages.team3,
-    description: "Expert in luxury fabrics and sustainable material innovation",
-    specialties: ["Fabric Sourcing", "Sustainable Design", "Textile Art"],
-    social: { instagram: "#", linkedin: "#" }
-  },
-  {
-    name: "James Fitzgerald",
-    role: "Fashion Stylist",
-    image: boutiqueImages.team4,
-    description: "Celebrity stylist and personal shopping consultant",
-    specialties: ["Personal Styling", "Wardrobe Curation", "Brand Consulting"],
-    social: { instagram: "#", linkedin: "#" }
-  }
-];
+
 
 const HeroCarousel = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -438,8 +405,7 @@ const Home = () => {
                     </Button>
                     </Link>
                     <div className="flex items-center space-x-2 text-gray-600 transform group-hover:scale-105 transition-transform duration-300">
-                      <span className="text-sm font-semibold">Custom Orders</span>
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              
                     </div>
                   </div>
                 </div>
@@ -451,81 +417,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      {/* Creative Team Section */}
-      {/* <section 
-        ref={el => sectionRefs.current[2] = el}
-        className="relative py-24 bg-gradient-to-br from-gray-50 to-white"
-      >
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-3 mb-6 px-6 py-3 bg-gradient-to-r from-blue-100 to-cyan-100 rounded-full border border-white/20 shadow-soft transform hover:scale-105 transition-all duration-300">
-              <Users className="w-5 h-5 text-blue-600" />
-              <span className="text-lg font-bold text-blue-700">Meet Our Masters</span>
-            </div>
-            <h2 className="text-5xl md:text-7xl font-serif font-bold text-gray-800 mb-6 leading-tight transform hover:scale-105 transition-transform duration-500">
-              Creative <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">Team</span>
-            </h2>
-            <p className="text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              The visionary artists and craftspeople behind every masterpiece
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {creativeTeam.map((member, index) => (
-              <div
-                key={index}
-                className="group relative bg-white rounded-3xl p-6 shadow-soft hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 border border-white/20"
-                style={{ transitionDelay: `${index * 150}ms` }}
-              >
-                <div className="relative overflow-hidden rounded-2xl mb-6">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full h-80 object-cover transform group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="absolute bottom-4 left-4 right-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100">
-                    <div className="flex space-x-2">
-                      <button className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-all duration-300 transform hover:scale-110">
-                        <Instagram className="w-4 h-4 text-white" />
-                      </button>
-                      <button className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-all duration-300 transform hover:scale-110">
-                        <Twitter className="w-4 h-4 text-white" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                
-                <h3 className="text-2xl font-bold text-gray-800 mb-2 transform group-hover:translate-x-2 transition-transform duration-300">
-                  {member.name}
-                </h3>
-                <div className="text-lg text-amber-600 font-semibold mb-3 transform group-hover:translate-x-1 transition-transform duration-300">
-                  {member.role}
-                </div>
-                <p className="text-gray-600 mb-4 leading-relaxed transform group-hover:translate-x-1 transition-transform duration-300">
-                  {member.description}
-                </p>
-                
-                <div className="flex flex-wrap gap-2">
-                  {member.specialties.map((specialty, idx) => (
-                    <span
-                      key={idx}
-                      className="px-3 py-1 bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 text-sm rounded-full border border-blue-200 transform group-hover:scale-105 transition-transform duration-300"
-                      style={{ transitionDelay: `${idx * 100}ms` }}
-                    >
-                      {specialty}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Hover shine effect */}
-                {/* <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div> */}
-              {/* </div> */}
-            {/* ))} */}
-          {/* </div> */}
-        {/* </div> */}
-      {/* </section> */} 
 
       {/* Enhanced Features with Images */}
       <section 
@@ -667,15 +558,7 @@ const Home = () => {
                   </div>
                 </div>
                 
-                <div className="flex mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star 
-                      key={i}
-                      className={`w-5 h-5 ${i < testimonial.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'} transform group-hover:scale-110 transition-transform duration-300`}
-                      style={{ transitionDelay: `${i * 100}ms` }}
-                    />
-                  ))}
-                </div>
+
                 
                 <p className="text-gray-700 text-lg leading-relaxed mb-6 italic transform group-hover:translate-x-1 transition-transform duration-300">
                   "{testimonial.content}"

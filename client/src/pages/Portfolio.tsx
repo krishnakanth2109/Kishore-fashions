@@ -37,9 +37,9 @@ const Portfolio = () => {
 
   // Filter categories for images
   const categories = ["all", "fashion", "training", "events", "behind-scenes"];
-  
-  const filteredImages = activeFilter === "all" 
-    ? images 
+
+  const filteredImages = activeFilter === "all"
+    ? images
     : images.filter(img => (img as any).category === activeFilter);
 
   return (
@@ -47,7 +47,7 @@ const Portfolio = () => {
       <Navbar />
       <br />
       <br />
-      
+
       {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-pink-100 to-rose-100 py-20 overflow-hidden">
         <div className="absolute inset-0 bg-white/20"></div>
@@ -61,7 +61,7 @@ const Portfolio = () => {
             </p>
           </div>
         </div>
-        
+
         {/* Decorative elements */}
         <div className="absolute top-0 left-0 w-32 h-32 bg-pink-200 rounded-full -translate-x-1/2 -translate-y-1/2 opacity-40"></div>
         <div className="absolute bottom-0 right-0 w-48 h-48 bg-rose-200 rounded-full translate-x-1/3 translate-y-1/3 opacity-30"></div>
@@ -81,20 +81,20 @@ const Portfolio = () => {
               Master the art of fashion with our exclusive training sessions
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {videos.map((video, index) => (
-              <Card 
-                key={video._id} 
+              <Card
+                key={video._id}
                 className="overflow-hidden bg-white border-pink-200 shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 group"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="aspect-video relative overflow-hidden">
-                  <iframe 
-                    src={video.embedUrl} 
-                    title={video.title} 
-                    className="w-full h-full transition-transform duration-700 group-hover:scale-105" 
-                    allowFullScreen 
+                  <iframe
+                    src={video.embedUrl}
+                    title={video.title}
+                    className="w-full h-full transition-transform duration-700 group-hover:scale-105"
+                    allowFullScreen
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>
@@ -127,18 +127,17 @@ const Portfolio = () => {
             <p className="text-rose-600 text-lg mb-8">
               Glimpse into our creative process and fashion journey
             </p>
-            
+
             {/* Filter Tabs */}
             <div className="flex flex-wrap justify-center gap-4 mb-12">
               {categories.map((category) => (
                 <button
                   key={category}
                   onClick={() => setActiveFilter(category)}
-                  className={`px-6 py-3 rounded-full font-medium capitalize transition-all duration-300 transform hover:scale-105 ${
-                    activeFilter === category
+                  className={`px-6 py-3 rounded-full font-medium capitalize transition-all duration-300 transform hover:scale-105 ${activeFilter === category
                       ? "bg-rose-600 text-white shadow-lg"
                       : "bg-white text-rose-700 border border-pink-200 hover:bg-pink-50 hover:border-pink-300"
-                  }`}
+                    }`}
                 >
                   {category.replace("-", " ")}
                 </button>
@@ -155,16 +154,16 @@ const Portfolio = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredImages.map((image, index) => (
-                <Card 
-                  key={image._id} 
+                <Card
+                  key={image._id}
                   className="overflow-hidden bg-white border-pink-200 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 group cursor-pointer"
                   style={{ animationDelay: `${index * 150}ms` }}
                 >
                   <div className="aspect-[4/3] overflow-hidden relative">
-                    <img 
-                      src={image.src} 
-                      alt={image.title} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                    <img
+                      src={image.src}
+                      alt={image.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div className="absolute bottom-4 left-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-200">
@@ -203,15 +202,21 @@ const Portfolio = () => {
             <p className="text-rose-600 text-lg mb-8 max-w-2xl mx-auto">
               Join our boutique family and let's craft unforgettable fashion experiences
             </p>
-            <button className="bg-rose-600 text-white px-8 py-4 rounded-full font-medium hover:bg-rose-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
-              Book a Consultation
-            </button>
+            <a href="/contact">
+
+              <button className="bg-rose-600 text-white px-8 py-4 rounded-full font-medium hover:bg-rose-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                Book a Consultation
+              </button>
+
+
+            </a>
+
           </div>
         </section>
       </div>
-      
+
       <Footer />
-      
+
       {/* Add custom animations to global CSS */}
       <style jsx global>{`
         @keyframes fade-in {
