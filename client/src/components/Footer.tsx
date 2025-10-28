@@ -25,16 +25,16 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-start space-x-3">
                 <Phone className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                <span className="text-muted-foreground">+1 (555) 123-4567</span>
+                <span className="text-muted-foreground">8147862367</span>
               </div>
               <div className="flex items-start space-x-3">
                 <Mail className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                <span className="text-muted-foreground">info@elegantstitches.com</span>
+                <span className="text-muted-foreground">kishor_botique@gmail.com</span>
               </div>
               <div className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                 <span className="text-muted-foreground">
-                  123 Fashion Street, Design District, NY 10001
+                  Kphb, Road No. 6, opp. sitara hostel, Dharma Reddy Colony Phase I, Hyderabad, Telangana 500072
                 </span>
               </div>
             </div>
@@ -52,14 +52,14 @@ const Footer = () => {
                 <Facebook className="w-5 h-5 text-primary" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/kishor_fashions_/"
                 className="p-3 bg-secondary rounded-full hover-lift transition-all"
                 aria-label="Instagram"
               >
                 <Instagram className="w-5 h-5 text-primary" />
               </a>
               <a
-                href="#"
+                href="https://www.youtube.com/@Kishor_fashion_tailoring_class"
                 className="p-3 bg-secondary rounded-full hover-lift transition-all"
                 aria-label="Youtube"
               >
