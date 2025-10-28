@@ -22,7 +22,7 @@ const allowedOrigins = [
   'http://localhost:5173',                 // For Vite development
   'http://localhost:3000',                 // For Create React App development
   'http://localhost:8080',                 // <-- THE FIX: Added your specific local origin
-  'https://kishore-fashions.netlify.app'  ,// Your deployed Netlify frontend
+  'https://kishorfashions.netlify.app/'  ,// Your deployed Netlify frontend
   'https://kishore-fashions.onrender.com'
 ];
 
