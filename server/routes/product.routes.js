@@ -1,8 +1,7 @@
 import express from "express";
 import Product from "../models/Product.model.js";
-import { protect } from "../middleware/auth.middleware.js";
-import upload from "../middleware/multer.middleware.js"; // Import multer
-import { uploadToCloudinary } from "../config/cloudinary.js"; // Import cloudinary helper
+import upload from "../middleware/multer.middleware.js";
+import { uploadToCloudinary } from "../config/cloudinary.js";
 
 const router = express.Router();
 
@@ -17,7 +16,7 @@ router.get("/", async (req, res) => {
 });
 
 // CREATE a new product with image upload
-router.post("/", protect, upload.single('image'), async (req, res) => {
+router.post("/", upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "Image file is required." });
@@ -28,7 +27,7 @@ router.post("/", protect, upload.single('image'), async (req, res) => {
 
     const newProduct = new Product({
       ...req.body,
-      image: result.secure_url, // Save the Cloudinary URL
+      image: result.secure_url,
     });
 
     const savedProduct = await newProduct.save();
@@ -39,10 +38,9 @@ router.post("/", protect, upload.single('image'), async (req, res) => {
 });
 
 // UPDATE a product by ID with optional new image
-router.put("/:id", protect, upload.single('image'), async (req, res) => {
+router.put("/:id", upload.single('image'), async (req, res) => {
   try {
     let imageUrl;
-    // If a new file is uploaded, upload it to Cloudinary
     if (req.file) {
       const result = await uploadToCloudinary(req.file.buffer);
       imageUrl = result.secure_url;
@@ -52,7 +50,7 @@ router.put("/:id", protect, upload.single('image'), async (req, res) => {
       ...req.body,
     };
     if (imageUrl) {
-      updateData.image = imageUrl; // Update the image URL if a new one was created
+      updateData.image = imageUrl;
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
@@ -65,11 +63,11 @@ router.put("/:id", protect, upload.single('image'), async (req, res) => {
 });
 
 // DELETE a product by ID
-router.delete("/:id", protect, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const deletedProduct = await Product.findByIdAndDelete(req.params.id);
     if (!deletedProduct) return res.status(404).json({ message: "Product not found" });
-    // Note: You might want to delete the image from Cloudinary here as well
+    
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting product", error });

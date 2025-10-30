@@ -9,7 +9,7 @@ import { Save, Phone, Mail, MapPin, MessageCircle } from "lucide-react";
 import { ContactInfo } from "@/types";
 import { FormEvent } from "react";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 interface ContactManagerProps {
   contactInfo: ContactInfo;
@@ -21,21 +21,26 @@ export const ContactManager = ({ contactInfo, setContactInfo }: ContactManagerPr
 
   const handleContactSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const token = localStorage.getItem('authToken');
-    if (!token) {
+    
+    // ✅ FIXED: Check sessionStorage instead of localStorage
+    const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+    if (!isLoggedIn) {
       toast({ title: 'Error', description: 'Authentication required.', variant: 'destructive' });
       return;
     }
+    
     try {
       const res = await fetch(`${API_URL}/contact/info`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          // ✅ FIXED: Removed Authorization header (no longer needed)
         },
         body: JSON.stringify(contactInfo)
       });
+      
       if (!res.ok) throw new Error("Failed to update contact information.");
+      
       toast({
         title: 'Success',
         description: 'Contact information updated successfully.',

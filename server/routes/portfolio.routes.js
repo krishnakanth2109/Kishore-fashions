@@ -1,7 +1,6 @@
 import express from "express";
 import PortfolioImage from "../models/PortfolioImage.model.js";
 import PortfolioVideo from "../models/PortfolioVideo.model.js";
-import { protect } from "../middleware/auth.middleware.js";
 import upload from "../middleware/multer.middleware.js";
 import { uploadToCloudinary } from "../config/cloudinary.js";
 
@@ -14,10 +13,9 @@ const normalizeYouTubeUrl = (url) => {
   }
 
   try {
-    // Extract video ID from various YouTube URL formats
     const patterns = [
       /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([^&\n?#]+)/,
-      /^([a-zA-Z0-9_-]{11})$/ // Direct video ID
+      /^([a-zA-Z0-9_-]{11})$/
     ];
 
     let videoId = null;
@@ -37,7 +35,6 @@ const normalizeYouTubeUrl = (url) => {
       };
     }
 
-    // Return normalized embed URL
     return { 
       isValid: true, 
       embedUrl: `https://www.youtube.com/embed/${videoId}` 
@@ -51,7 +48,7 @@ const normalizeYouTubeUrl = (url) => {
   }
 };
 
-// --- PORTFOLIO IMAGE ROUTES (with file upload) ---
+// --- PORTFOLIO IMAGE ROUTES ---
 router.get("/images", async (req, res) => {
   try {
     const images = await PortfolioImage.find({});
@@ -61,7 +58,7 @@ router.get("/images", async (req, res) => {
   }
 });
 
-router.post("/images", protect, upload.single('image'), async (req, res) => {
+router.post("/images", upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "Image file is required" });
@@ -80,7 +77,7 @@ router.post("/images", protect, upload.single('image'), async (req, res) => {
   }
 });
 
-router.put("/images/:id", protect, upload.single('image'), async (req, res) => {
+router.put("/images/:id", upload.single('image'), async (req, res) => {
   try {
     let imageUrl;
     if (req.file) {
@@ -107,7 +104,7 @@ router.put("/images/:id", protect, upload.single('image'), async (req, res) => {
   }
 });
 
-router.delete("/images/:id", protect, async (req, res) => {
+router.delete("/images/:id", async (req, res) => {
   try {
     const deletedImage = await PortfolioImage.findByIdAndDelete(req.params.id);
     if (!deletedImage) {
@@ -119,7 +116,7 @@ router.delete("/images/:id", protect, async (req, res) => {
   }
 });
 
-// --- PORTFOLIO VIDEO ROUTES (with YouTube URL validation) ---
+// --- PORTFOLIO VIDEO ROUTES ---
 router.get("/videos", async (req, res) => {
   try {
     const videos = await PortfolioVideo.find({});
@@ -129,18 +126,16 @@ router.get("/videos", async (req, res) => {
   }
 });
 
-router.post("/videos", protect, async (req, res) => {
+router.post("/videos", async (req, res) => {
   try {
     const { title, description, embedUrl } = req.body;
     
-    // Validate required fields
     if (!title || !description || !embedUrl) {
       return res.status(400).json({ 
         message: "Title, description, and YouTube URL are required" 
       });
     }
     
-    // Validate and normalize YouTube URL
     const validation = normalizeYouTubeUrl(embedUrl);
     if (!validation.isValid) {
       return res.status(400).json({ 
@@ -148,7 +143,6 @@ router.post("/videos", protect, async (req, res) => {
       });
     }
     
-    // Create new video with normalized URL
     const newVideo = new PortfolioVideo({
       title,
       description,
@@ -165,16 +159,14 @@ router.post("/videos", protect, async (req, res) => {
   }
 });
 
-router.put("/videos/:id", protect, async (req, res) => {
+router.put("/videos/:id", async (req, res) => {
   try {
     const { title, description, embedUrl } = req.body;
     
-    // Prepare update data
     const updateData = {};
     if (title) updateData.title = title;
     if (description) updateData.description = description;
     
-    // Validate and normalize YouTube URL if provided
     if (embedUrl) {
       const validation = normalizeYouTubeUrl(embedUrl);
       if (!validation.isValid) {
@@ -204,7 +196,7 @@ router.put("/videos/:id", protect, async (req, res) => {
   }
 });
 
-router.delete("/videos/:id", protect, async (req, res) => {
+router.delete("/videos/:id", async (req, res) => {
   try {
     const deletedVideo = await PortfolioVideo.findByIdAndDelete(req.params.id);
     if (!deletedVideo) {

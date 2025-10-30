@@ -1,11 +1,13 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
-  const token = localStorage.getItem("authToken");
+  // ✅ FIXED: Changed from localStorage to sessionStorage
+  // ✅ FIXED: Changed from "authToken" to "isLoggedIn"
+  const isLoggedIn = sessionStorage.getItem("isLoggedIn");
 
-  // If token exists, allow access to the nested routes (e.g., Admin page)
+  // If isLoggedIn exists and is "true", allow access to the nested routes (e.g., Admin page)
   // Otherwise, redirect to the login page
-  return token ? <Outlet /> : <Navigate to="/login" replace />;
+  return isLoggedIn === "true" ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;

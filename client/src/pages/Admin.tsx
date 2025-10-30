@@ -1,6 +1,5 @@
-// src/pages/Admin.tsx
-
 import { useEffect, useState, ChangeEvent, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 // Import types
@@ -14,13 +13,13 @@ import { ProductsManager } from "@/components/admin/ProductsManager";
 import { PortfolioManager } from "@/components/admin/PortfolioManager";
 import { VideosManager } from "@/components/admin/VideosManager";
 import { ContactManager } from "@/components/admin/ContactManager";
-// This import will now work because you renamed the file to ContactTable.tsx
 import ContactTable from "@/components/admin/ContactTable";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 const Admin = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [portfolioImages, setPortfolioImages] = useState<PortfolioImage[]>([]);
   const [videos, setVideos] = useState<PortfolioVideo[]>([]);
@@ -31,6 +30,14 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  // ✅ Check if user is logged in
+  useEffect(() => {
+    const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const fetchData = async () => {
     try {
@@ -56,13 +63,14 @@ const Admin = () => {
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
-      localStorage.removeItem('authToken');
+      sessionStorage.removeItem("isLoggedIn");
+      sessionStorage.removeItem("adminEmail");
       toast({
         title: "Logged out",
         description: "You have been successfully logged out.",
         className: "bg-blue-50 text-blue-800 border-blue-200"
       });
-      setTimeout(() => { window.location.href = '/login'; }, 1000);
+      setTimeout(() => { navigate("/login"); }, 1000);
     }
   };
 
@@ -77,16 +85,17 @@ const Admin = () => {
     const { type, data, isEditing } = currentForm;
     if (!type) return;
 
-    const token = localStorage.getItem('authToken');
-    if (!token) {
+    const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+    if (!isLoggedIn) {
       toast({ title: "Authentication Error", description: "You are not logged in.", variant: 'destructive' });
+      navigate("/login");
       return;
     }
 
     const endpoint = isEditing ? `${API_URL}/${type}/${(data as any)._id}` : `${API_URL}/${type}`;
     const method = isEditing ? 'PUT' : 'POST';
 
-    let headers: HeadersInit = { 'Authorization': `Bearer ${token}` };
+    let headers: HeadersInit = {};
     let body: BodyInit;
 
     if (selectedFile) {
@@ -121,16 +130,16 @@ const Admin = () => {
   const handleDelete = async (type: string, id: string) => {
     if (!window.confirm("Are you sure you want to delete this item?")) return;
 
-    const token = localStorage.getItem('authToken');
-    if (!token) {
+    const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+    if (!isLoggedIn) {
       toast({ title: "Authentication Error", description: "You are not logged in.", variant: 'destructive' });
+      navigate("/login");
       return;
     }
 
     try {
       const response = await fetch(`${API_URL}/${type}/${id}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!response.ok) throw new Error("Failed to delete item.");
       toast({ title: "Success!", description: "Item has been deleted.", className: "bg-green-50 text-green-800 border-green-200" });
@@ -170,7 +179,6 @@ const Admin = () => {
         return <VideosManager videos={videos} {...commonProps} />;
       case 'contact':
         return <ContactManager contactInfo={contactInfo} setContactInfo={setContactInfo} />;
-      // The case name now correctly matches the tab name.
       case 'messages':
         return <ContactTable />;
       default:

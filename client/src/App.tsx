@@ -36,7 +36,7 @@ const App = () => (
           {/* Protected Admin Route */}
           <Route element={<ProtectedRoute />}>
             <Route path="/admin" element={<Admin />} />
-          </Route>
+          </Route>//
           
           {/* Catch-all 404 Route */}
           <Route path="*" element={<NotFound />} />
