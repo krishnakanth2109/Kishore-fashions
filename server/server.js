@@ -12,12 +12,15 @@ import productRoutes from "./routes/product.routes.js";
 import portfolioRoutes from "./routes/portfolio.routes.js";
 import contactRoutes from "./routes/contact.routes.js";
 
+
 // --- 1. INITIAL SERVER SETUP ---
 dotenv.config();
 const app = express();
 
 // --- 2. PRODUCTION-READY CORS CONFIGURATION ---
 // Whitelist of allowed origins
+
+const isProduction = process.env.NODE_ENV === 'production';
 const allowedOrigins = [            // For Vite development
   'http://localhost:3000',                 // For Create React App development
   'http://localhost:8080',                 // <-- THE FIX: Added your specific local origin
