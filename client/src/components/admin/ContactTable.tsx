@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 // Define the type for a contact message
 interface ContactMessage {
@@ -22,7 +22,7 @@ const ContactTable = () => {
     const fetchMessages = async () => {
       try {
         // ✅ FIXED: Removed authToken check - no longer needed
-        const response = await axios.get(`${API_BASE_URL}/contact/messages`);
+        const response = await axios.get(`${API_BASE_URL}/api/contact/messages`);
         setContacts(response.data);
         setError(null);
       } catch (err: any) {

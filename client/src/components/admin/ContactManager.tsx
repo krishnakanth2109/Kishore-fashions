@@ -30,7 +30,7 @@ export const ContactManager = ({ contactInfo, setContactInfo }: ContactManagerPr
     }
     
     try {
-      const res = await fetch(`${API_URL}/contact/info`, {
+      const res = await fetch(`${API_URL}/api/contact/info`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

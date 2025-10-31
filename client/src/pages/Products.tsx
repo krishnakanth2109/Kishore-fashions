@@ -9,20 +9,12 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [priceRange, setPriceRange] = useState([0, 10000]);
-  const [sortBy, setSortBy] = useState("featured");
-  const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedProduct, setSelectedProduct] = useState(null); // State for the modal
-  const [selectedPriceFilter, setSelectedPriceFilter] = useState("all");
-
-  // This is no longer used by any UI element but is kept to not alter handlers
-  const priceFilters = [
-    { id: "all", label: "All Prices", range: [0, 10000] },
-    { id: "budget", label: "Budget (₹0 - ₹2000)", range: [0, 2000] },
-    { id: "premium", label: "Premium (₹2000 - ₹5000)", range: [2000, 5000] },
-    { id: "luxury", label: "Luxury (₹5000+)", range: [5000, 10000] }
-  ];
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  
+  // Filter states
+  const [priceRange, setPriceRange] = useState({ min: "", max: "" });
+  const [sortOption, setSortOption] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -41,39 +33,57 @@ const Products = () => {
     fetchProducts();
   }, []);
 
+  // Apply filters and sorting whenever products, priceRange, or sortOption changes
   useEffect(() => {
     let filtered = [...products];
 
-    if (searchQuery) {
-      filtered = filtered.filter(product =>
-        product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+    // Apply price filter
+    if (priceRange.min !== "" || priceRange.max !== "") {
+      filtered = filtered.filter(product => {
+        const price = product.price;
+        const min = priceRange.min === "" ? 0 : Number(priceRange.min);
+        const max = priceRange.max === "" ? Infinity : Number(priceRange.max);
+        return price >= min && price <= max;
+      });
     }
 
-    filtered = filtered.filter(product =>
-      product.price >= priceRange[0] && product.price <= priceRange[1]
-    );
-
-    switch (sortBy) {
-      case "price-low":
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case "price-high":
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case "name":
+    // Apply sorting
+    switch (sortOption) {
+      case "a-z":
         filtered.sort((a, b) => a.title.localeCompare(b.title));
         break;
-      case "newest":
-        filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      case "z-a":
+        filtered.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case "low-high":
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case "high-low":
+        filtered.sort((a, b) => b.price - a.price);
         break;
       default:
+        // No sorting
         break;
     }
 
     setFilteredProducts(filtered);
-  }, [products, priceRange, sortBy, searchQuery]);
+  }, [products, priceRange, sortOption]);
+
+  const handlePriceFilterChange = (field, value) => {
+    setPriceRange(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleSortChange = (value) => {
+    setSortOption(value);
+  };
+
+  const clearFilters = () => {
+    setPriceRange({ min: "", max: "" });
+    setSortOption("");
+  };
 
   const handleWhatsAppEnquiry = (product) => {
     const phoneNumber = "919515174064";
@@ -85,12 +95,6 @@ const Products = () => {
 
   const handleAddToGroup = () => {
     window.open("https://chat.whatsapp.com/LSws8MVod4nF8wYjTX8Vce?mode=wwc", '_blank');
-  };
-
-  // This is no longer used by any UI element but is kept to not alter handlers
-  const handleQuickPriceFilter = (filter) => {
-    setSelectedPriceFilter(filter.id);
-    setPriceRange(filter.range);
   };
 
   const containerVariants = {
@@ -163,9 +167,8 @@ const Products = () => {
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50">
       <Navbar />
       <br />
-    
 
-      {/* Hero section remains unchanged */}
+      {/* Hero section */}
       <motion.section
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -200,93 +203,76 @@ const Products = () => {
                 >
                     Discover handcrafted elegance that tells your unique story
                 </motion.p>
-                <motion.div
-                    className="max-w-2xl mx-auto"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1, duration: 0.6 }}
-                >
-                    <div className="relative group">
-                        <input
-                            type="text"
-                            placeholder="Search for your perfect design..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-pink-400 focus:ring-4 focus:ring-pink-100 outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm shadow-lg group-hover:shadow-xl text-lg"
-                        />
-                        <motion.svg
-                            className="w-6 h-6 absolute left-4 top-1/2 transform -translate-y-1/2 text-pink-500"
-                            animate={{ rotate: searchQuery ? 90 : 0 }}
-                            transition={{ duration: 0.3 }}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </motion.svg>
-                    </div>
-                </motion.div>
             </motion.div>
         </div>
       </motion.section>
-
-      {/* MODIFIED Filter Section - No longer sticky, quick filters removed */}
+      
+      {/* Filters Section */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8, duration: 0.6 }}
-        className="bg-white/80 backdrop-blur-xl border-b border-pink-100 shadow-sm"
+        transition={{ duration: 0.6 }}
+        className="container mx-auto px-4 py-8"
       >
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
-
-            {/* Sort Dropdown */}
-            <div className="flex items-center gap-4">
-              <motion.select
-                whileHover={{ scale: 1.02 }}
-                whileFocus={{ scale: 1.02 }}
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition-all duration-300 bg-white shadow-sm"
-              >
-                <option value="featured">✨ Featured</option>
-                <option value="newest">🆕 New Arrivals</option>
-                <option value="price-low">💰 Price: Low to High</option>
-                <option value="price-high">💎 Price: High to Low</option>
-                <option value="name">🔤 Name A-Z</option>
-              </motion.select>
-            </div>
-
-            {/* Custom Price Range Slider */}
-            <div className="flex items-center gap-4 bg-white rounded-2xl px-6 py-3 border-2 border-pink-100 shadow-sm">
-              <span className="text-sm text-pink-600 font-medium whitespace-nowrap">
-                Price Range:
-              </span>
-              <div className="flex items-center gap-2">
-                <span className="text-pink-700 font-semibold">₹{priceRange[0]}</span>
-                <span className="text-pink-400">→</span>
-                <span className="text-pink-700 font-semibold">₹{priceRange[1]}</span>
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+          <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
+            <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+              {/* Price Range Filter */}
+              <div className="flex flex-col sm:flex-row gap-3 items-center">
+                <label className="text-pink-700 font-semibold whitespace-nowrap">Price Range:</label>
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    placeholder="Min"
+                    value={priceRange.min}
+                    onChange={(e) => handlePriceFilterChange('min', e.target.value)}
+                    className="w-24 px-3 py-2 border border-pink-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  />
+                  <span className="flex items-center text-pink-500">-</span>
+                  <input
+                    type="number"
+                    placeholder="Max"
+                    value={priceRange.max}
+                    onChange={(e) => handlePriceFilterChange('max', e.target.value)}
+                    className="w-24 px-3 py-2 border border-pink-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  />
+                </div>
               </div>
-              <input
-                type="range"
-                min="0"
-                max="10000"
-                step="500"
-                value={priceRange[1]}
-                onChange={(e) => {
-                  setPriceRange([priceRange[0], parseInt(e.target.value)]);
-                  setSelectedPriceFilter("all");
-                }}
-                className="w-32 accent-pink-500 cursor-pointer"
-              />
+
+              {/* Sort Dropdown */}
+              <div className="flex flex-col sm:flex-row gap-3 items-center">
+                <label className="text-pink-700 font-semibold whitespace-nowrap">Sort By:</label>
+                <select
+                  value={sortOption}
+                  onChange={(e) => handleSortChange(e.target.value)}
+                  className="px-4 py-2 border border-pink-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white"
+                >
+                  <option value="">Default</option>
+                  <option value="a-z">Name: A to Z</option>
+                  <option value="z-a">Name: Z to A</option>
+                  <option value="low-high">Price: Low to High</option>
+                  <option value="high-low">Price: High to Low</option>
+                </select>
+              </div>
             </div>
 
+            {/* Clear Filters Button */}
+            {(priceRange.min !== "" || priceRange.max !== "" || sortOption !== "") && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={clearFilters}
+                className="px-6 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-300 whitespace-nowrap"
+              >
+                Clear Filters
+              </motion.button>
+            )}
           </div>
         </div>
       </motion.section>
 
-      {/* Products Grid section remains unchanged */}
-      <section className="container mx-auto px-4 py-16">
+      {/* Products Grid section */}
+      <section className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -336,18 +322,21 @@ const Products = () => {
               </svg>
             </div>
             <h3 className="text-3xl font-serif text-pink-800 mb-4">No designs found</h3>
-            <p className="text-pink-600 mb-8 text-lg">Try adjusting your search or price range</p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                setSearchQuery("");
-                setPriceRange([0, 10000]);
-              }}
-              className="px-8 py-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-2xl font-semibold text-lg hover:shadow-xl transition-all duration-300 shadow-lg"
-            >
-              Show All Designs
-            </motion.button>
+            <p className="text-pink-600 mb-8 text-lg">
+              {priceRange.min !== "" || priceRange.max !== "" 
+                ? "No products match your price range. Try adjusting your filters."
+                : "Please check back later for new arrivals."}
+            </p>
+            {(priceRange.min !== "" || priceRange.max !== "") && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={clearFilters}
+                className="px-8 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-xl font-semibold text-lg hover:shadow-lg transition-all duration-300"
+              >
+                Clear Filters
+              </motion.button>
+            )}
           </motion.div>
         ) : (
           <motion.div

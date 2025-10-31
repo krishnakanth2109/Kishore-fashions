@@ -42,10 +42,10 @@ const Admin = () => {
   const fetchData = async () => {
     try {
       const [productsRes, imagesRes, videosRes, contactRes] = await Promise.all([
-        fetch(`${API_URL}/products`),
-        fetch(`${API_URL}/portfolio/images`),
-        fetch(`${API_URL}/portfolio/videos`),
-        fetch(`${API_URL}/contact/info`),
+        fetch(`${API_URL}/api/products`),
+        fetch(`${API_URL}/api/portfolio/images`),
+        fetch(`${API_URL}/api/portfolio/videos`),
+        fetch(`${API_URL}/api/contact/info`),
       ]);
       setProducts(await productsRes.json());
       setPortfolioImages(await imagesRes.json());

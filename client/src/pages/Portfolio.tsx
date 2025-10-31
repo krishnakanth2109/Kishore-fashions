@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { PortfolioImage as ImageType, PortfolioVideo as VideoType } from "@/types";
 
 // Use the environment variable for the API base URL, with a fallback for local development
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL =`${import.meta.env.VITE_API_BASE_URL}`|| "http://localhost:5000";
 
 const Portfolio = () => {
   const [videos, setVideos] = useState<VideoType[]>([]);
@@ -217,23 +217,7 @@ const Portfolio = () => {
 
       <Footer />
 
-      {/* Add custom animations to global CSS */}
-      <style jsx global>{`
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slide-up {
-          from { opacity: 0; transform: translateY(40px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.8s ease-out;
-        }
-        .animate-slide-up {
-          animation: slide-up 0.8s ease-out both;
-        }
-      `}</style>
+  
     </div>
   );
 };

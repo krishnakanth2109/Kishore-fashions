@@ -12,19 +12,13 @@ import {
 import { PlusCircle, Trash2, Edit, PackageX, Loader2 } from "lucide-react";
 import { AdminForm } from "./AdminForm";
 import { PortfolioImage, CurrentFormState, FormDataType } from "@/types";
-import { ChangeEvent, FormEvent } from "react";
+import { ChangeEvent, FormEvent, useState, useEffect } from "react";
 
-interface PortfolioManagerProps {
-  portfolioImages: PortfolioImage[];
-  currentForm: CurrentFormState;
-  isLoading: boolean;
-  openForm: (type: string, data?: FormDataType, isEditing?: boolean) => void;
-  setCurrentForm: (form: CurrentFormState) => void;
-  handleFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleFormSubmit: (e: FormEvent) => void;
-  handleCancelForm: () => void;
-  handleDelete: (type: string, id: string) => void;
-}
+// Define the base URL for your API from environment variables
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
+// This component no longer needs props as it is self-contained.
+interface PortfolioManagerProps {}
 
 // Skeleton card for loading state
 const SkeletonCard = () => (
@@ -37,25 +31,115 @@ const SkeletonCard = () => (
   </div>
 );
 
-export const PortfolioManager = ({ 
-  portfolioImages, 
-  currentForm, 
-  isLoading,
-  openForm, 
-  setCurrentForm, 
-  handleFileChange, 
-  handleFormSubmit, 
-  handleCancelForm, 
-  handleDelete 
-}: PortfolioManagerProps) => {
+export const PortfolioManager = (props: PortfolioManagerProps) => {
+  // --- STATE MANAGEMENT ---
+  const [portfolioImages, setPortfolioImages] = useState<PortfolioImage[]>([]);
+  const [currentForm, setCurrentForm] = useState<CurrentFormState>({ type: null, data: {}, isEditing: false });
+  const [isLoading, setIsLoading] = useState(true); // For initial fetch and delete operations
+  const [isSubmitting, setIsSubmitting] = useState(false); // For form submission (create/update)
+
+  // --- DATA FETCHING ---
+  useEffect(() => {
+    const fetchPortfolioImages = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/portfolio/images`);
+        if (!response.ok) throw new Error("Failed to fetch portfolio images.");
+        const data = await response.json();
+        setPortfolioImages(data);
+      } catch (error) {
+        console.error("Error fetching portfolio images:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchPortfolioImages();
+  }, []);
+
+  // --- IMAGE URL HELPER ---
+  const getPortfolioImageUrl = (imagePath?: string) => {
+    if (!imagePath) return "https://via.placeholder.com/300x200?text=No+Image";
+    if (imagePath.startsWith('http')) return imagePath;
+    // The property from the database should be 'image', not 'src' to match the form field
+    // Assuming the database returns a field named 'image' with the path
+    return `${API_BASE_URL}/${imagePath}`;
+  };
+
+  // --- HANDLER FUNCTIONS ---
+  const openForm = (type: string, data: FormDataType = {}, isEditing = false) => {
+    setCurrentForm({ type, data, isEditing });
+  };
+
+  const handleCancelForm = () => {
+    setCurrentForm({ type: null, data: {}, isEditing: false });
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file) {
+      setCurrentForm(prev => ({ ...prev, data: { ...prev.data, image: file } }));
+    }
+  };
+
+  const handleDelete = async (type: string, id: string) => {
+    if (confirm("Are you sure you want to delete this image?")) {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/portfolio/images/${id}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) throw new Error("Failed to delete image.");
+        setPortfolioImages(portfolioImages.filter(img => img._id !== id));
+      } catch (error) {
+        console.error("Error deleting image:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  const handleFormSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    const { data, isEditing } = currentForm;
+    const formData = new FormData();
+    Object.keys(data).forEach(key => {
+      formData.append(key, data[key]);
+    });
+
+    const url = isEditing
+      ? `${API_BASE_URL}/api/portfolio/images/${data._id}`
+      : `${API_BASE_URL}/api/portfolio/images`;
+    const method = isEditing ? 'PUT' : 'POST';
+
+    try {
+      const response = await fetch(url, { method, body: formData });
+      if (!response.ok) throw new Error("Form submission failed.");
+      
+      const savedImage = await response.json();
+      if (isEditing) {
+        setPortfolioImages(portfolioImages.map(img => img._id === savedImage._id ? savedImage : img));
+      } else {
+        setPortfolioImages([...portfolioImages, savedImage]);
+      }
+      handleCancelForm();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  // --- FORM FIELDS DEFINITION ---
   const portfolioImageFields = [
     { name: 'title', label: 'Image Title', placeholder: 'Enter image title' },
     { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Enter image description' },
     { name: 'image', label: 'Upload Image', type: 'file', placeholder: '' },
   ];
 
+  // --- RENDER LOGIC ---
   const renderPortfolioGrid = () => {
-    // Show skeleton loaders on initial fetch
     if (isLoading && portfolioImages.length === 0) {
       return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -64,18 +148,13 @@ export const PortfolioManager = ({
       );
     }
 
-    // Show empty state if there are no portfolio images
     if (!isLoading && portfolioImages.length === 0) {
       return (
         <div className="text-center py-16 px-6 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50">
           <PackageX className="mx-auto h-12 w-12 text-gray-400" />
           <h3 className="mt-4 text-lg font-semibold text-gray-800">No Portfolio Images Found</h3>
           <p className="mt-1 text-sm text-gray-500">Get started by adding your first portfolio image.</p>
-          <Button 
-            onClick={() => openForm('portfolio/images')} 
-            className="mt-6"
-            disabled={isLoading}
-          >
+          <Button onClick={() => openForm('portfolio/images')} className="mt-6" disabled={isLoading}>
             <PlusCircle className="w-4 h-4 mr-2" />
             Add New Image
           </Button>
@@ -83,34 +162,19 @@ export const PortfolioManager = ({
       );
     }
 
-    // Display the grid of portfolio image cards
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {portfolioImages.map(image => (
           <Card key={image._id} className="overflow-hidden group transition-all duration-300 hover:shadow-xl hover:border-purple-500/50">
             <div className="relative">
-              <img src={image.src} alt={image.title} className="h-56 w-full object-cover" />
+              {/* Corrected image source using the helper function */}
+              <img src={getPortfolioImageUrl(image.src)} alt={image.title} className="h-56 w-full object-cover bg-gray-200" />
               <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => openForm('portfolio/images', image, true)} 
-                  className="text-white bg-black/50 border-white/50 hover:bg-white hover:text-black"
-                  disabled={isLoading}
-                >
-                  {isLoading && currentForm.isEditing && currentForm.data?._id === image._id ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  ) : (
-                    <Edit className="w-4 h-4 mr-2" />
-                  )}
-                  {isLoading && currentForm.isEditing && currentForm.data?._id === image._id ? 'Editing...' : 'Edit'}
+                <Button variant="outline" size="sm" onClick={() => openForm('portfolio/images', image, true)} className="text-white bg-black/50 border-white/50 hover:bg-white hover:text-black" disabled={isLoading}>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit
                 </Button>
-                <Button 
-                  variant="destructive" 
-                  size="sm" 
-                  onClick={() => handleDelete('portfolio/images', image._id!)}
-                  disabled={isLoading}
-                >
+                <Button variant="destructive" size="sm" onClick={() => handleDelete('portfolio/images', image._id!)} disabled={isLoading}>
                   <Trash2 className="w-4 h-4 mr-2" />
                   Delete
                 </Button>
@@ -133,56 +197,37 @@ export const PortfolioManager = ({
           <h2 className="text-2xl font-bold text-gray-800">Manage Portfolio</h2>
           <p className="text-sm text-gray-500 mt-1">Add, edit, or delete portfolio images from here.</p>
         </div>
-        <Button 
-          onClick={() => openForm('portfolio/images')} 
-          className="bg-gradient-to-r from-purple-500 to-purple-600 text-white mt-4 sm:mt-0 self-start sm:self-center"
-          disabled={isLoading}
-        >
-          {isLoading && !currentForm.isEditing ? (
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-          ) : (
-            <PlusCircle className="w-4 h-4 mr-2" />
-          )}
-          {isLoading && !currentForm.isEditing ? 'Creating...' : 'Add New Image'}
+        <Button onClick={() => openForm('portfolio/images')} className="bg-gradient-to-r from-purple-500 to-purple-600 text-white mt-4 sm:mt-0 self-start sm:self-center" disabled={isLoading}>
+          <PlusCircle className="w-4 h-4 mr-2" />
+          Add New Image
         </Button>
       </div>
 
-      {/* --- MODAL DIALOG FOR ADD/EDIT FORM --- */}
       <Dialog open={currentForm.type === 'portfolio/images'} onOpenChange={(isOpen) => !isOpen && handleCancelForm()}>
         <DialogContent className="sm:max-w-[650px]">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="flex items-center">
               {currentForm.isEditing ? 'Edit Portfolio Image' : 'Add New Portfolio Image'}
-              {isLoading && (
-                <Loader2 className="w-4 h-4 ml-2 inline animate-spin" />
-              )}
+              {isSubmitting && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
             </DialogTitle>
             <DialogDescription>
-              {currentForm.isEditing
-                ? "Update the details of your portfolio image here. Click save when you're done."
-                : "Fill in the details for the new portfolio image. Click save to add it to your portfolio."
-              }
-              {isLoading && (
-                <span className="block mt-1 text-purple-600">
-                  {currentForm.isEditing ? 'Updating image...' : 'Creating image...'}
-                </span>
-              )}
+              {currentForm.isEditing ? "Update the details for this image." : "Fill in the details for the new image."}
+              {isSubmitting && <span className="block mt-1 text-purple-600 font-medium">Submitting...</span>}
             </DialogDescription>
           </DialogHeader>
           <AdminForm
             fields={portfolioImageFields}
             formData={currentForm.data}
-            setFormData={(d) => setCurrentForm({ ...currentForm, data: d })}
+            setFormData={(d) => setCurrentForm(prev => ({ ...prev, data: d }))}
             onFileChange={handleFileChange}
             onSubmit={handleFormSubmit}
             onCancel={handleCancelForm}
             isEditing={currentForm.isEditing}
-            isLoading={isLoading}
+            isLoading={isSubmitting}
           />
         </DialogContent>
       </Dialog>
-      {/* --- END MODAL DIALOG --- */}
-
+      
       {renderPortfolioGrid()}
     </div>
   );
