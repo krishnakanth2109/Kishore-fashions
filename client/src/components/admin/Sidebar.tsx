@@ -67,15 +67,7 @@ export const Sidebar = ({ activeTab, setActiveTab, isMobileOpen, setIsMobileOpen
           <div className="flex-shrink-0 p-4 border-t border-gray-700 mt-auto">
             {!isCollapsed ? (
               <>
-                <div className="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg mb-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                    <User className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">Admin User</p>
-                    <p className="text-xs text-gray-400 truncate">administrator@example.com</p>
-                  </div>
-                </div>
+         
                 <Button 
                   onClick={onLogout} 
                   variant="outline" 
