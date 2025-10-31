@@ -47,23 +47,7 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected Successfully"))
   .catch((err) => console.error("MongoDB Connection Error:", err));
 
-// --- 4. SEED ADMIN USER ON STARTUP ---
-const seedAdminUser = async () => {
-  try {
-    const adminExists = await User.findOne({ email: "kishorfashions1@gmail.com" });
-    if (!adminExists) {
-      await User.create({
-        email: "kishorfashions1@gmail.com",
-        password: "password123",
-      });
-      console.log("Admin user has been created.");
-    }
-  } catch (error)
-  {
-    console.error("Error seeding admin user:", error);
-  }
-};
-seedAdminUser();
+
 
 // --- 5. CONNECT API ROUTES ---
 app.use("/api/auth", authRoutes);
