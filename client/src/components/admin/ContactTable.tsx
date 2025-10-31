@@ -21,7 +21,6 @@ const ContactTable = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        // ✅ FIXED: Removed authToken check - no longer needed
         const response = await axios.get(`${API_BASE_URL}/api/contact/messages`);
         setContacts(response.data);
         setError(null);
@@ -50,8 +49,8 @@ const ContactTable = () => {
 
   if (loading) {
     return (
-      <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
-        <div className="text-center py-10">
+      <div className="p-4 sm:p-6 bg-gray-50 min-h-screen flex items-center justify-center">
+        <div className="text-center">
           <p className="text-gray-600">Loading messages...</p>
         </div>
       </div>
@@ -63,11 +62,21 @@ const ContactTable = () => {
       <h2 className="text-3xl font-serif font-bold text-gray-800 text-center mb-6">Contact Form Messages</h2>
       
       {error && (
-        <p className="text-center text-red-600 bg-red-100 p-3 rounded-lg mb-4 shadow-sm">{error}</p>
+        <div className="max-w-4xl mx-auto">
+          <p className="text-center text-red-600 bg-red-100 p-3 rounded-lg mb-4 shadow-sm">{error}</p>
+        </div>
       )}
 
-      <div className="overflow-x-auto shadow-xl rounded-2xl bg-white">
-        <table className="min-w-full border-collapse text-sm">
+      <div className="overflow-x-auto shadow-xl rounded-2xl bg-white max-w-7xl mx-auto">
+        <table className="min-w-full border-collapse text-sm table-fixed">
+          <colgroup>
+            <col style={{ width: '15%' }} />
+            <col style={{ width: '20%' }} />
+            <col style={{ width: '15%' }} />
+            <col style={{ width: '30%' }} />
+            <col style={{ width: '15%' }} />
+            <col style={{ width: '5%' }} />
+          </colgroup>
           <thead className="bg-pink-100 text-pink-900 uppercase">
             <tr>
               <th className="px-6 py-3 text-left font-semibold tracking-wider">Name</th>
@@ -82,20 +91,22 @@ const ContactTable = () => {
             {contacts.length > 0 ? (
               contacts.map((contact) => (
                 <tr key={contact._id} className="hover:bg-pink-50 transition-colors duration-200">
-                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{contact.name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 truncate">{contact.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-600 truncate">
                     <a href={`mailto:${contact.email}`} className="hover:text-pink-600 transition-colors">
                       {contact.email}
                     </a>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-600">{contact.phone || 'N/A'}</td>
-                  <td className="px-6 py-4 text-gray-700 min-w-[300px] whitespace-pre-wrap max-w-md truncate">
-                    {contact.message}
+                  <td className="px-6 py-4 text-gray-700">
+                    <div className="max-h-24 overflow-y-auto whitespace-pre-wrap break-words">
+                        {contact.message}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-500">
                     {new Date(contact.createdAt).toLocaleString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
                     <button
                       onClick={() => handleDelete(contact._id)}
                       className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
