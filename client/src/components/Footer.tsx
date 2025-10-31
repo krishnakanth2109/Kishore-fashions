@@ -9,9 +9,8 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <img src={logo} alt="Elegant Stitches" className="h-12 w-12" />
               <span className="text-xl font-serif font-bold text-gradient-gold">
-                Elegant Stitches
+                Kishor Botique
               </span>
             </div>
             <p className="text-muted-foreground leading-relaxed">

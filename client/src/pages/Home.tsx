@@ -62,7 +62,7 @@ const collections = [
   {
     name: "Our Stitching Services",
     description: "Custom-made outfits designed with precision, style, and perfect fitting.",
-  
+
     image: boutiqueImages.collection1,
     gradient: "from-purple-600 to-pink-600",
     items: "45+ Designs"
@@ -70,7 +70,7 @@ const collections = [
   {
     name: "Designer Stitching Training",
     description: "Learn professional stitching and design skills from expert tailors.",
-  
+
     image: boutiqueImages.collection2,
     gradient: "from-gray-700 to-gray-900",
     items: "32+ Students"
@@ -78,7 +78,7 @@ const collections = [
   {
     name: "Luxury Couture & Products",
     description: "Explore elegant designs that blend modern trends with timeless fashion",
-  
+
     image: boutiqueImages.collection3,
     gradient: "from-rose-600 to-orange-600",
     items: "67+ Designs"
@@ -164,9 +164,8 @@ const HeroCarousel = () => {
       {slides.map((slide, index) => (
         <div
           key={index}
-          className={`absolute inset-0 transition-all duration-1000 ease-in-out transform ${
-            index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
-          }`}
+          className={`absolute inset-0 transition-all duration-1000 ease-in-out transform ${index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
+            }`}
         >
           <img
             src={slide.image}
@@ -174,12 +173,11 @@ const HeroCarousel = () => {
             className="w-full h-full object-cover transform transition-transform duration-10000 ease-linear hover:scale-110"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent"></div>
-          
+
           <div className="absolute inset-0 flex items-center">
             <div className="container mx-auto px-8">
-              <div className={`max-w-2xl space-y-6 transition-all duration-1000 delay-300 ${
-                index === currentSlide ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'
-              }`}>
+              <div className={`max-w-2xl space-y-6 transition-all duration-1000 delay-300 ${index === currentSlide ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'
+                }`}>
                 <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20 transform hover:scale-105 transition-all duration-300">
                   <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
                   <span className="text-white/90 text-sm font-semibold">New Collection</span>
@@ -194,28 +192,27 @@ const HeroCarousel = () => {
                   {slide.description}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 pt-6">
-<Link to="/products">
-  <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-6 text-lg font-semibold shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 hover:rotate-1">
-    Explore Collection
-    <ArrowRight className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
-  </Button>
-</Link>
-      
+                  <Link to="/products">
+                    <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-6 text-lg font-semibold shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 hover:rotate-1">
+                      Explore Collection
+                      <ArrowRight className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
+                    </Button>
+                  </Link>
+
                 </div>
               </div>
             </div>
           </div>
         </div>
       ))}
-      
+
       {/* Slide Indicators */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
         {slides.map((_, index) => (
           <button
             key={index}
-            className={`w-3 h-3 rounded-full transition-all duration-300 transform hover:scale-150 ${
-              index === currentSlide ? 'bg-white scale-125' : 'bg-white/50'
-            }`}
+            className={`w-3 h-3 rounded-full transition-all duration-300 transform hover:scale-150 ${index === currentSlide ? 'bg-white scale-125' : 'bg-white/50'
+              }`}
             onClick={() => setCurrentSlide(index)}
           />
         ))}
@@ -268,7 +265,7 @@ const Home = () => {
           entry.target.classList.add('animate-out');
         }
       });
-    }, { 
+    }, {
       threshold: 0.1,
       rootMargin: '0px 0px -50px 0px'
     });
@@ -292,14 +289,14 @@ const Home = () => {
     <div className="min-h-screen bg-gradient-to-br from-white via-rose-50/30 to-amber-50/30 overflow-hidden">
       {/* Scroll Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-gray-200/50 z-50 backdrop-blur-sm">
-        <div 
+        <div
           className="h-full bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 transition-all duration-300 shadow-lg"
           style={{ width: `${scrollProgress}%` }}
         ></div>
       </div>
 
-      <Navbar/>
-      
+      <Navbar />
+
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
         <div className="w-full">
@@ -308,14 +305,14 @@ const Home = () => {
       </section>
 
       {/* Animated Stats Section */}
-      <section 
+      <section
         ref={el => sectionRefs.current[0] = el}
         className="relative py-20 bg-white/40 backdrop-blur-sm border-y border-white/20 transform transition-all duration-1000"
       >
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat, index) => (
-              <div 
+              <div
                 key={index}
                 className="group text-center p-8 rounded-3xl bg-white/60 backdrop-blur-sm border border-white/20 shadow-soft hover:shadow-2xl transition-all duration-700 hover:-translate-y-3 hover:scale-105 hover:rotate-1"
                 style={{ transitionDelay: `${index * 150}ms` }}
@@ -339,7 +336,7 @@ const Home = () => {
       </section>
 
       {/* Premium Collections */}
-      <section 
+      <section
         ref={el => sectionRefs.current[1] = el}
         className="relative py-24 overflow-hidden"
       >
@@ -382,7 +379,7 @@ const Home = () => {
                         </p>
                       </div>
                       <div className="text-right transform group-hover:translate-x-[-4px] transition-transform duration-300">
-                
+
                         <div className="text-sm text-white/80">
                           {collection.items}
                         </div>
@@ -395,17 +392,17 @@ const Home = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="p-6">
                   <div className="flex items-center justify-between">
                     <Link to="/products">
-                    <Button className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white shadow-lg transform group-hover:scale-105 group-hover:rotate-1 transition-all duration-300">
-                      View Our Collection
-                      <ArrowRight className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
-                    </Button>
+                      <Button className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white shadow-lg transform group-hover:scale-105 group-hover:rotate-1 transition-all duration-300">
+                        View Our Collection
+                        <ArrowRight className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
+                      </Button>
                     </Link>
                     <div className="flex items-center space-x-2 text-gray-600 transform group-hover:scale-105 transition-transform duration-300">
-              
+
                     </div>
                   </div>
                 </div>
@@ -419,7 +416,7 @@ const Home = () => {
       </section>
 
       {/* Enhanced Features with Images */}
-      <section 
+      <section
         ref={el => sectionRefs.current[3] = el}
         className="relative py-24 bg-gradient-to-br from-purple-50/50 to-pink-50/50"
       >
@@ -428,7 +425,7 @@ const Home = () => {
             <div className="space-y-8">
               <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full border border-white/20 shadow-soft transform hover:scale-105 transition-all duration-300">
                 <Award className="w-5 h-5 text-purple-600" />
-                <span className="text-lg font-bold text-purple-700">Why Choose Élégance</span>
+                <span className="text-lg font-bold text-purple-700">Why Choose Our Botique</span>
               </div>
               <h2 className="text-5xl md:text-6xl font-serif font-bold text-gray-800 leading-tight transform hover:scale-105 transition-transform duration-500">
                 Beyond <span className="bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">Fashion</span>
@@ -436,7 +433,7 @@ const Home = () => {
               <p className="text-xl text-gray-600 leading-relaxed transform hover:translate-y-1 transition-transform duration-300">
                 We don't just create clothing; we craft experiences. Every piece is a testament to our commitment to excellence, innovation, and timeless beauty.
               </p>
-              
+
               <div className="space-y-6">
                 {features.map((feature, index) => (
                   <div
@@ -511,7 +508,7 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Floating Elements */}
               <div className="absolute -top-4 -right-4 w-8 h-8 bg-amber-400 rounded-full animate-ping"></div>
               <div className="absolute -bottom-4 -left-4 w-6 h-6 bg-pink-400 rounded-full animate-bounce"></div>
@@ -521,7 +518,7 @@ const Home = () => {
       </section>
 
       {/* Enhanced Testimonials */}
-      <section 
+      <section
         ref={el => sectionRefs.current[4] = el}
         className="relative py-24 bg-white/80 backdrop-blur-sm"
       >
@@ -557,18 +554,18 @@ const Home = () => {
                     </div>
                   </div>
                 </div>
-                
 
-                
+
+
                 <p className="text-gray-700 text-lg leading-relaxed mb-6 italic transform group-hover:translate-x-1 transition-transform duration-300">
                   "{testimonial.content}"
                 </p>
-                
+
                 <div className="text-sm text-amber-600 font-medium pt-4 border-t border-gray-200 transform group-hover:translate-x-1 transition-transform duration-300">
                   {testimonial.beforeAfter}
                 </div>
 
-           
+
               </div>
             ))}
           </div>
@@ -576,7 +573,7 @@ const Home = () => {
       </section>
 
       {/* Ultimate CTA Section */}
-      <section 
+      <section
         ref={el => sectionRefs.current[5] = el}
         className="relative py-28 bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900 overflow-hidden"
       >
@@ -596,15 +593,15 @@ const Home = () => {
               <span className="text-sm font-semibold text-amber-300">Few Slots Left</span>
             </div>
           </div>
-          
+
           <h2 className="text-5xl md:text-7xl font-serif font-bold text-white mb-8 leading-tight transform hover:scale-105 transition-transform duration-500">
             Begin Your <span className="bg-gradient-to-r from-amber-300 to-pink-300 bg-clip-text text-transparent">Style Legacy</span>
           </h2>
-          
+
           <p className="text-2xl text-white/80 mb-12 max-w-3xl mx-auto leading-relaxed transform hover:translate-y-1 transition-transform duration-300">
             Experience the art of bespoke fashion. Schedule your private consultation and discover the difference of true luxury tailoring.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12">
             <Link to="/products">
               <Button size="lg" className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white shadow-2xl transform hover:scale-105 hover:rotate-1 transition-all duration-300 font-bold text-lg px-8 py-6">
@@ -615,7 +612,7 @@ const Home = () => {
             </Link>
 
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto text-white/60">
             {[
               { icon: Award, text: "Complimentary Fitting" },
@@ -637,16 +634,14 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-6 transform hover:scale-105 transition-transform duration-300">
-                <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-pink-500 rounded-full flex items-center justify-center">
-                  <Scissors className="w-6 h-6 text-white" />
-                </div>
-                <span className="text-2xl font-serif font-bold">Élégance</span>
+                
+                <span className="text-2xl font-serif font-bold">Kishor Botique</span>
               </div>
               <p className="text-gray-400 leading-relaxed transform hover:translate-y-1 transition-transform duration-300">
-                Crafting timeless elegance through bespoke tailoring and luxury fashion since 2008.
+                Crafting timeless elegance through bespoke tailoring and luxury fashion
               </p>
             </div>
-            
+
             <div>
               <h3 className="font-semibold text-lg mb-6 transform hover:translate-x-1 transition-transform duration-300">Quick Links</h3>
               <div className="space-y-3">
@@ -657,39 +652,64 @@ const Home = () => {
                 ))}
               </div>
             </div>
-            
+
             <div>
               <h3 className="font-semibold text-lg mb-6 transform hover:translate-x-1 transition-transform duration-300">Contact</h3>
               <div className="space-y-3 text-gray-400">
                 <div className="flex items-center space-x-3 transform hover:translate-x-1 transition-transform duration-300">
                   <MapPin className="w-4 h-4 text-amber-400" />
-                  <span>123 Fashion Avenue, Paris</span>
+                  <span>Kphb, Road No. 6, opp. sitara hostel, Dharma Reddy Colony Phase I, Hyderabad, Telangana 500072</span>
                 </div>
                 <div className="flex items-center space-x-3 transform hover:translate-x-1 transition-transform duration-300">
                   <Phone className="w-4 h-4 text-amber-400" />
-                  <span>+1 (555) 123-4567</span>
+                  <span>8147862367
+                  </span>
                 </div>
                 <div className="flex items-center space-x-3 transform hover:translate-x-1 transition-transform duration-300">
                   <Mail className="w-4 h-4 text-amber-400" />
-                  <span>hello@elegance.com</span>
+                  <span>kishorfashions@gamil.com</span>
                 </div>
               </div>
             </div>
-            
-            <div>
-              <h3 className="font-semibold text-lg mb-6 transform hover:translate-x-1 transition-transform duration-300">Follow Us</h3>
-              <div className="flex space-x-4">
-                {[Instagram, Facebook, Twitter].map((Icon, index) => (
-                  <button key={index} className="p-3 bg-gray-800 rounded-full hover:bg-amber-500 transition-all duration-300 hover:scale-110 transform hover:rotate-12">
-                    <Icon className="w-5 h-5 transform hover:scale-110 transition-transform duration-300" />
-                  </button>
-                ))}
-              </div>
-            </div>
+
+     <div>
+  <h3 className="font-semibold text-lg mb-6 transform hover:translate-x-1 transition-transform duration-300 text-gray-200">
+    Follow Us
+  </h3>
+  <div className="flex flex-col space-y-3">
+    <a
+      href="https://wa.me/8147862367"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-gray-300 font-medium hover:text-black transition-colors duration-300"
+    >
+      WhatsApp
+    </a>
+
+    <a
+      href="https://www.instagram.com/kishor_fashions_/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-gray-300 font-medium hover:text-black transition-colors duration-300"
+    >
+      Instagram
+    </a>
+
+    <a
+      href="https://www.youtube.com/@Kishor_fashion_tailoring_class"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-gray-300 font-medium hover:text-black transition-colors duration-300"
+    >
+      YouTube
+    </a>
+  </div>
+</div>
+
           </div>
-          
+
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-            <p className="transform hover:scale-105 transition-transform duration-300">&copy; 2024 Élégance Boutique. All rights reserved.</p>
+            <p className="transform hover:scale-105 transition-transform duration-300">&copy; Kishor Boutique. All rights reserved.</p>
           </div>
         </div>
       </footer>
