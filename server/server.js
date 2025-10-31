@@ -18,11 +18,10 @@ const app = express();
 
 // --- 2. PRODUCTION-READY CORS CONFIGURATION ---
 // Whitelist of allowed origins
-const allowedOrigins = [
-  'http://localhost:5173',                 // For Vite development
+const allowedOrigins = [            // For Vite development
   'http://localhost:3000',                 // For Create React App development
   'http://localhost:8080',                 // <-- THE FIX: Added your specific local origin
-  'https://kishorfashions.netlify.app/'  ,// Your deployed Netlify frontend
+  'https://kishorfashions.netlify.app'  ,// Your deployed Netlify frontend
   'https://kishore-fashions-2z6j.onrender.com'
 ];
 
