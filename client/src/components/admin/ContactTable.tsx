@@ -39,7 +39,7 @@ const ContactTable = () => {
     if (!window.confirm("Are you sure you want to delete this message?")) return;
 
     try {
-      await axios.delete(`${API_BASE_URL}/contact/messages/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/contact/messages/${id}`);
       setContacts(contacts.filter(c => c._id !== id));
     } catch (err: any) {
       console.error("Error deleting message:", err);
