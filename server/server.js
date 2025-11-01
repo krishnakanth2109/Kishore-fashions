@@ -45,11 +45,18 @@ app.use(cors(corsOptions)); // Use the secure CORS options
 app.use(express.json()); // Middleware to parse JSON bodies
 
 // --- 3. DATABASE CONNECTION ---
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected Successfully"))
-  .catch((err) => console.error("MongoDB Connection Error:", err));
+const dbConnection = async () => {
+  try {
+    await mongoose.connect(process.env.Mongo_URI)
+  } catch (error) {
+    console.log(error)
+  }
+}
+dbConnection()
 
-
+mongoose.connection.once('open', () => {
+  console.log('MongoDb Connected')
+})
 
 // --- 5. CONNECT API ROUTES ---
 app.use("/api/auth", authRoutes);
