@@ -42,6 +42,27 @@ const Portfolio = () => {
     ? images
     : images.filter(img => (img as any).category === activeFilter);
 
+  // Function to handle video click and redirect to YouTube
+  const handleVideoClick = (video: VideoType) => {
+    // Try different possible properties that might contain the YouTube URL
+    const youtubeUrl = video.url || 
+                      (video as any).youtubeUrl || 
+                      (video.embedUrl ? video.embedUrl.replace('/embed/', '/watch?v=') : null);
+    
+    if (youtubeUrl) {
+      window.open(youtubeUrl, '_blank', 'noopener,noreferrer');
+    } else {
+      console.warn('No YouTube URL found for video:', video);
+      // Fallback: try to extract video ID from embed URL
+      if (video.embedUrl) {
+        const videoIdMatch = video.embedUrl.match(/embed\/([^?]+)/);
+        if (videoIdMatch && videoIdMatch[1]) {
+          window.open(`https://www.youtube.com/watch?v=${videoIdMatch[1]}`, '_blank', 'noopener,noreferrer');
+        }
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white">
       <Navbar />
@@ -86,8 +107,9 @@ const Portfolio = () => {
             {videos.map((video, index) => (
               <Card
                 key={video._id}
-                className="overflow-hidden bg-white border-pink-200 shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 group"
+                className="overflow-hidden bg-white border-pink-200 shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 group cursor-pointer"
                 style={{ animationDelay: `${index * 100}ms` }}
+                onClick={() => handleVideoClick(video)}
               >
                 <div className="aspect-video relative overflow-hidden">
                   <iframe
@@ -104,7 +126,7 @@ const Portfolio = () => {
                   </h3>
                   <p className="text-rose-600 leading-relaxed">{video.description}</p>
                   <div className="mt-4 flex items-center text-pink-500 group-hover:text-rose-600 transition-colors">
-                    <span className="text-sm font-medium">Watch Tutorial</span>
+                    <span className="text-sm font-medium">Watch on YouTube</span>
                     <svg className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
