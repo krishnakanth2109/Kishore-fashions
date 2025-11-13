@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import { Target, Eye, Heart, Users, Award, Sparkles, Quote, Scissors, Zap } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useRef, useState } from "react";
+import "./About.css";
 
 // A custom SVG icon for a needle, as it's not in Lucide
 const NeedleIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -121,7 +122,7 @@ const About = () => {
             <Sparkles className="absolute -bottom-6 -right-6 w-12 h-12 text-rose-400 animate-bounce delay-1000" />
           </div>
           <p className="text-2xl md:text-3xl text-gray-700 max-w-4xl mx-auto leading-relaxed font-light mb-8">
-            Empowering women through the timeless art of tailoring and boutique design
+            We believe every woman carries creativity within her — all she needs is the right platform to bring it to life.
           </p>
         </div>
 
@@ -145,17 +146,16 @@ const About = () => {
                   </div>
                   <div className="space-y-6 text-lg">
                     <p className="text-gray-700 leading-relaxed bg-white/60 p-6 rounded-2xl border-l-4 border-pink-400 hover:border-l-8 transition-all duration-500 hover:scale-105 transform hover:shadow-lg animate-paragraph opacity-0 translate-x-4 blur-sm transition-all duration-700">
-                      <strong className="text-pink-500 text-xl bg-gradient-to-r from-pink-100 to-pink-50 px-2 py-1 rounded">Kishor Kumar</strong>, the visionary behind Elegant Stitches, 
-                      brings over <span className="text-rose-500 font-semibold bg-rose-50 px-1 rounded">15 years</span> of expertise in fashion design and boutique management. 
-                      His passion for empowering women through skill development has transformed 
-                      countless lives across the nation.
+                      <strong className="text-pink-500 text-xl bg-gradient-to-r from-pink-100 to-pink-50 px-2 py-1 rounded">Kishor Kumar</strong>, Founder & Creative Head of Kishor Fashions
+  Every great brand begins with a vision — and for Kishor Fashions, that vision belongs to Mr. Kishor, a passionate designer and mentor who turned his love for fashion into a lifelong mission to empower others.
+
+
                     </p>
                     <div className="bg-gradient-to-r from-pink-50 to-rose-50 p-6 rounded-2xl border border-pink-200 animate-paragraph opacity-0 translate-x-4 blur-sm transition-all duration-700 delay-300">
                       <Quote className="w-8 h-8 text-pink-400 mb-4" />
                       <p className="text-gray-600 italic text-lg leading-relaxed">
-                        "I believe every woman has an innate talent for creation. Our mission is to 
-                        provide the tools and guidance to unlock that potential and turn passion 
-                        into profession."
+                        "
+With years of experience in tailoring, boutique design, and fashion training, Kishor has guided hundreds of students to build confidence, creativity, and successful careers in the world of fashion."
                       </p>
                       <div className="flex items-center space-x-4 pt-4 mt-4 border-t border-pink-200">
                         <Award className="w-6 h-6 text-rose-500" />
@@ -195,11 +195,16 @@ const About = () => {
         >
           <div className="text-center mb-16">
             <h2 className="text-5xl font-serif font-bold bg-gradient-to-r from-rose-500 to-pink-500 bg-clip-text text-transparent mb-6">
-              Our Training Environment
+              Teaching Philosophy
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              State-of-the-art facilities with a hands-on learning experience.
+            <p className="text-xl text-gray-600 max-w-4xl mx-auto">
+              Kishor believes that true learning doesn’t come from books alone —    it comes from Practice, Patience, and Persistence.
             </p>
+
+            <p className="text-xl text-gray-600 max-w-4xl mx-auto">
+              Every student at Kishor Fashions is taught with care, personal attention, and the assurance that “if you follow the rules, success will follow you.”
+            </p>
+
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="relative h-96">
@@ -218,18 +223,25 @@ const About = () => {
             <div className="space-y-6">
               <div className="flex items-center space-x-4 mb-6">
                 <Scissors className="w-12 h-12 text-pink-500 animate-[bounce_2s_ease-in-out_infinite]" />
-                <h3 className="text-3xl font-bold text-gray-700">Hands-On Learning</h3>
+                <h3 className="text-3xl font-bold text-gray-700">Unique Approach Combines</h3>
               </div>
               <div className="space-y-4 text-lg">
                 <p className="text-gray-600 leading-relaxed p-4 bg-white/70 rounded-xl border-l-4 border-rose-400 hover:border-l-8 transition-all duration-300 animate-paragraph opacity-0 translate-x-4 blur-sm">
-                  Students learn through <span className="text-rose-500 font-semibold bg-rose-50 px-1 rounded">practical, real-world projects</span> that simulate actual boutique operations.
+                  <span className="text-rose-500 font-semibold bg-rose-50 px-1 rounded">Practical stitching training</span> 
                 </p>
-                <p className="text-gray-600 leading-relaxed p-4 bg-white/70 rounded-xl border-l-4 border-pink-400 hover:border-l-8 transition-all duration-300 animate-paragraph opacity-0 translate-x-4 blur-sm delay-200">
-                  <span className="text-pink-500 font-semibold bg-pink-50 px-1 rounded">Modern equipment</span> and traditional techniques combine for a comprehensive learning experience.
+
+                <p className="text-gray-600 leading-relaxed p-4 bg-white/70 rounded-xl border-l-4 border-rose-400 hover:border-l-8 transition-all duration-300 animate-paragraph opacity-0 translate-x-4 blur-sm">
+                  <span className="text-rose-500 font-semibold bg-rose-50 px-1 rounded">Creative design learning
+</span> 
                 </p>
-                <p className="text-gray-600 leading-relaxed p-4 bg-white/70 rounded-xl border-l-4 border-rose-400 hover:border-l-8 transition-all duration-300 animate-paragraph opacity-0 translate-x-4 blur-sm delay-400">
-                  <span className="text-rose-500 font-semibold bg-rose-50 px-1 rounded">Small class sizes</span> ensure personalized attention and mentorship from industry experts.
+                <p className="text-gray-600 leading-relaxed p-4 bg-white/70 rounded-xl border-l-4 border-rose-400 hover:border-l-8 transition-all duration-300 animate-paragraph opacity-0 translate-x-4 blur-sm">
+                  <span className="text-rose-500 font-semibold bg-rose-50 px-1 rounded">Home-based video lessons
+</span> 
                 </p>
+                <p className="text-gray-600 leading-relaxed p-4 bg-white/70 rounded-xl border-l-4 border-rose-400 hover:border-l-8 transition-all duration-300 animate-paragraph opacity-0 translate-x-4 blur-sm">
+                  <span className="text-rose-500 font-semibold bg-rose-50 px-1 rounded">Personal doubt-clearing sessions (100% clarity guaranteed)</span> 
+                </p>
+               
               </div>
             </div>
           </div>
@@ -287,15 +299,15 @@ const About = () => {
               </svg>
             </div>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto mt-8">
-              The principles that guide everything we do at Elegant Stitches.
+              our values guide everything we do — from every stitch we teach to every dream we help build.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { icon: Target, title: "Excellence in Education", description: "Maintaining the highest standards in fashion education, combining traditional craftsmanship with modern design principles.", color: "from-pink-400 to-rose-400", bgColor: "bg-gradient-to-br from-pink-50 to-rose-50" },
-              { icon: Eye, title: "Innovation & Creativity", description: "Encouraging creative expression while embracing technological advancements in fashion design.", color: "from-rose-400 to-pink-400", bgColor: "bg-gradient-to-br from-rose-50 to-pink-50" },
-              { icon: Heart, title: "Empowerment & Growth", description: "Dedicated to empowering women through skill development and entrepreneurial training.", color: "from-pink-500 to-rose-500", bgColor: "bg-gradient-to-br from-pink-100 to-rose-100" }
+              { icon: Target, title: "Commitment to Excellence", description: " We believe in doing every task with perfection — whether it’s stitching a garment, designing a pattern, or guiding a student.Every class, every project, and every student matters.", color: "from-pink-400 to-rose-400", bgColor: "bg-gradient-to-br from-pink-50 to-rose-50" },
+              { icon: Eye, title: "Creativity with Purpose", description: "Fashion is not just about beauty — it’s about expression.We encourage our students to bring their imagination to life and create designs that reflect personality, culture,and innovation.", color: "from-rose-400 to-pink-400", bgColor: "bg-gradient-to-br from-rose-50 to-pink-50" },
+              { icon: Heart, title: "Learn with Discipline", description: "At Kishor Fashions, we value discipline as the key to success.Regular practice, timely homework, and dedication to improvement help every learner build both skill and confidence.", color: "from-pink-500 to-rose-500", bgColor: "bg-gradient-to-br from-pink-100 to-rose-100" }
             ].map((value, index) => (
               <Card key={index} className={`border-0 shadow-2xl ${value.bgColor} hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15)] transform hover:-translate-y-4 transition-all duration-500 group overflow-hidden`}>
                 <CardContent className="p-8 relative">
@@ -315,47 +327,6 @@ const About = () => {
       </div>
 
       <Footer />
-
-      <style jsx>{`
-        @keyframes draw-stitch {
-          to {
-            stroke-dashoffset: 0;
-          }
-        }
-        
-        .stitch-path {
-          stroke-dasharray: 10 5;
-          stroke-dashoffset: 1000;
-          animation: draw-stitch linear infinite;
-        }
-
-        .stitch-path-reverse {
-            stroke-dasharray: 10 5;
-            stroke-dashoffset: -1000;
-            animation: draw-stitch linear infinite;
-        }
-        
-        @keyframes draw-underline {
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
-        .heading-underline {
-            stroke-dasharray: 500;
-            stroke-dashoffset: 500;
-            animation: draw-underline 2s ease-out forwards;
-            animation-delay: 1s; /* Start after main section animates in */
-        }
-
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
-      `}</style>
     </div>
   );
 };

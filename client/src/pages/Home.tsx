@@ -3,7 +3,6 @@ import { Scissors, Award, Users, Heart, Sparkles, Star, ArrowRight, Play, Instag
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
-// import Navbar from './Navbar'; // Import the Navbar component
 
 // Dynamic image imports (replace with your actual images)
 const boutiqueImages = {
@@ -17,44 +16,96 @@ const boutiqueImages = {
   about: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=1000&h=700&fit=crop",
   workshop: "https://images.unsplash.com/photo-1604644401890-0bd678c83788?w=1000&h=700&fit=crop",
   fabric: "https://img.freepik.com/premium-photo/tailor-stitching-making-clothes-with-sewing-machine-fashion-design-creative-workshop-serious-man-working-handmade-trendy-stylish-clothing-fashionable-boutique-store_590464-67850.jpg",
-  // team1: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop&crop=face",
-  // team2: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4b?w=400&h=400&fit=crop&crop=face",
-  // team3: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
-  // team4: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=400&h=400&fit=crop&crop=face"
 };
 
 const features = [
   {
     icon: Scissors,
-    title: "Bespoke Tailoring",
-    description: "Custom-made garments crafted to perfection with precision measurements and personal styling consultations",
+    title: "Learn from Real Boutique Professionals",
+    description: "Our trainers are experienced boutique designers who share not just stitching skills but practical business tips — from selecting fabrics to pricing your designs.",
     gradient: "from-amber-500 to-orange-500",
     stats: "200+ Techniques",
-    image: boutiqueImages.fabric
+    image: boutiqueImages.fabric,
+    expandedContent: {
+      details: [
+        "Learn from industry professionals with 10+ years of boutique experience",
+        "Master fabric selection, pattern making, and advanced stitching techniques",
+        "Get insider tips on pricing strategies and customer management",
+        "Hands-on training with professional equipment and tools"
+      ],
+      benefits: [
+        "Start your own boutique business",
+        "Build professional portfolio",
+        "Industry-recognized certification",
+        "Lifetime mentorship support"
+      ]
+    }
   },
   {
     icon: Award,
-    title: "Luxury Certification",
-    description: "Internationally recognized certifications in haute couture and luxury fashion design",
+    title: "100% Practical Training",
+    description: "Every class is hands-on. You'll cut, stitch, design, and finish your own garments under expert guidance. By the end of the course, you'll have a ready portfolio of your creations.",
     gradient: "from-purple-500 to-pink-500",
     stats: "98% Success Rate",
-    image: boutiqueImages.workshop
+    image: boutiqueImages.workshop,
+    expandedContent: {
+      details: [
+        "Complete 50+ practical projects during the course",
+        "Work with different fabrics: cotton, silk, linen, and designer materials",
+        "Learn advanced techniques: embroidery, embellishments, and finishing",
+        "Real-time feedback and personalized guidance"
+      ],
+      benefits: [
+        "Portfolio of 20+ completed garments",
+        "Confidence to handle complex designs",
+        "Professional finishing techniques",
+        "Industry-standard quality work"
+      ]
+    }
   },
   {
     icon: Users,
-    title: "Elite Clientelle",
-    description: "Join our exclusive network of fashion connoisseurs, celebrities, and style influencers",
+    title: "Home Learning Support with Videos",
+    description: "Missed a class? No problem! Watch our exclusive training videos at home — each lesson can be rewatched up to three times for better understanding",
     gradient: "from-blue-500 to-cyan-500",
     stats: "5K+ VIP Clients",
-    image: boutiqueImages.hero2
+    image: boutiqueImages.hero2,
+    expandedContent: {
+      details: [
+        "Access to 100+ exclusive training videos",
+        "Step-by-step tutorials for every technique",
+        "Mobile-friendly platform accessible 24/7",
+        "Downloadable patterns and resources"
+      ],
+      benefits: [
+        "Learn at your own pace",
+        "Never miss important lessons",
+        "Reinforce classroom learning",
+        "Access from anywhere, anytime"
+      ]
+    }
   },
   {
     icon: Heart,
-    title: "Artisan Craftsmanship",
-    description: "Each piece tells a story of traditional craftsmanship blended with contemporary design philosophy",
+    title: "Flexible Timings",
+    description: "Morning, afternoon, or evening — choose a schedule that fits your lifestyle. We also adjust for long leaves and special situations to ensure you never miss your learning.",
     gradient: "from-rose-500 to-red-500",
     stats: "1000+ Masterpieces",
-    image: boutiqueImages.about
+    image: boutiqueImages.about,
+    expandedContent: {
+      details: [
+        "Multiple batch timings: 8AM, 12PM, 4PM, 7PM",
+        "Weekend batches available",
+        "Make-up classes for missed sessions",
+        "Personalized schedule adjustments"
+      ],
+      benefits: [
+        "Balance work and learning",
+        "No pressure of fixed timings",
+        "Family-friendly schedules",
+        "Holiday batch options"
+      ]
+    }
   },
 ];
 
@@ -62,7 +113,6 @@ const collections = [
   {
     name: "Our Stitching Services",
     description: "Custom-made outfits designed with precision, style, and perfect fitting.",
-
     image: boutiqueImages.collection1,
     gradient: "from-purple-600 to-pink-600",
     items: "45+ Designs"
@@ -70,7 +120,6 @@ const collections = [
   {
     name: "Designer Stitching Training",
     description: "Learn professional stitching and design skills from expert tailors.",
-
     image: boutiqueImages.collection2,
     gradient: "from-gray-700 to-gray-900",
     items: "32+ Students"
@@ -78,7 +127,6 @@ const collections = [
   {
     name: "Luxury Couture & Products",
     description: "Explore elegant designs that blend modern trends with timeless fashion",
-
     image: boutiqueImages.collection3,
     gradient: "from-rose-600 to-orange-600",
     items: "67+ Designs"
@@ -86,7 +134,6 @@ const collections = [
   {
     name: "Our Signature Collections",
     description: "Experience premium craftsmanship and high-end fashion for every occasion",
-
     image: boutiqueImages.collection4,
     gradient: "from-white to-rose-100",
     items: "28+ Designs"
@@ -95,26 +142,30 @@ const collections = [
 
 const testimonials = [
   {
-    name: "M.Venu Prasad",
+    name: "T.Kishor",
     role: "Fashion Director, Vogue",
     content: "The attention to detail and quality of craftsmanship is unparalleled. Each piece feels like wearable art.",
-
     image: "https://img.freepik.com/premium-photo/face-young-handsome-indian-man_251136-20685.jpg",
     beforeAfter: "Client for 5+ years"
   },
   {
-    name: "P.Vanket Ramana Reddy",
+    name: "Shaed",
     role: "Celebrity Stylist",
     content: "Working with this boutique transformed how I approach red carpet styling. The quality is exceptional.",
-    rating: 5,
     image: "https://st.depositphotos.com/1011643/4430/i/950/depositphotos_44309759-stock-photo-young-indian-man-outdoors.jpg",
     beforeAfter: "30+ celebrity clients dressed"
   },
   {
-    name: "Bhavana Sharma",
+    name: "T.Lavanya",
     role: "Luxury Fashion Influencer",
     content: "From custom fittings to final delivery, the experience is nothing short of extraordinary. True luxury.",
-    rating: 5,
+    image: "https://live.staticflickr.com/3741/8875025219_fa4ab2ceb4_z.jpg",
+    beforeAfter: "1M+ followers in fashion"
+  },
+  {
+    name: "Sravanthi",
+    role: "Luxury Fashion Influencer",
+    content: "From custom fittings to final delivery, the experience is nothing short of extraordinary. True luxury.",
     image: "https://live.staticflickr.com/3741/8875025219_fa4ab2ceb4_z.jpg",
     beforeAfter: "1M+ followers in fashion"
   }
@@ -122,20 +173,18 @@ const testimonials = [
 
 const stats = [
   { number: "2,500+", label: "Bespoke Designs", icon: Sparkles, suffix: "Created" },
-  { number: "15", label: "Years of Excellence", icon: Award, suffix: "Experience" },
-  { number: "50+", label: "Master Artisans", icon: Users, suffix: "Team" },
+  { number: "20", label: "Years of Excellence", icon: Award, suffix: "Experience" },
+  { number: "15+", label: "Master Artisans", icon: Users, suffix: "Team" },
   { number: "24/7", label: "Concierge Service", icon: Clock, suffix: "Support" }
 ];
-
-
 
 const HeroCarousel = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
     {
       image: boutiqueImages.hero1,
-      title: "Haute Couture",
-      subtitle: "Where Art Meets Fashion",
+      title: "Master Boutique Tailoring & Styling",
+      subtitle: "Launch Your Own Boutique with Confidence",
       description: "Experience bespoke tailoring that celebrates your unique elegance"
     },
     {
@@ -146,8 +195,8 @@ const HeroCarousel = () => {
     },
     {
       image: boutiqueImages.hero3,
-      title: "Artisan Craft",
-      subtitle: "Masterful Creations",
+      title: "Crafted for Your Moments",
+      subtitle: "Tailored to fit your story — from dawn to dusk, celebration to calm.",
       description: "Each piece tells a story of exceptional craftsmanship"
     }
   ];
@@ -198,7 +247,6 @@ const HeroCarousel = () => {
                       <ArrowRight className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
                     </Button>
                   </Link>
-
                 </div>
               </div>
             </div>
@@ -228,6 +276,181 @@ const HeroCarousel = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const FeatureCard = ({ feature, index }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <div
+      className="flex items-start space-x-4 group p-6 rounded-2xl hover:bg-white/50 transition-all duration-300 transform hover:translate-x-2 bg-white/30 backdrop-blur-sm border border-white/20 shadow-soft"
+      style={{ transitionDelay: `${index * 100}ms` }}
+    >
+      <div className={`p-3 rounded-xl bg-gradient-to-r ${feature.gradient} transform group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300 flex-shrink-0`}>
+        <feature.icon className="w-6 h-6 text-white transform group-hover:scale-110 transition-transform duration-300" />
+      </div>
+      <div className="flex-1 transform group-hover:translate-x-1 transition-transform duration-300">
+        <h3 className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-gray-900 transition-colors duration-300">
+          {feature.title}
+        </h3>
+        <p className="text-gray-600 group-hover:text-gray-700 transition-colors duration-300 mb-3">
+          {feature.description}
+        </p>
+        
+        {/* Stats */}
+        <div className="flex items-center mb-3">
+          <div className="text-sm font-semibold text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
+            {feature.stats}
+          </div>
+        </div>
+
+        {/* Read More Button */}
+        <Button
+          variant="ghost"
+          className="p-0 h-auto text-blue-600 hover:text-blue-800 font-semibold transition-colors duration-300 flex items-center gap-1"
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          {isExpanded ? 'Read Less' : 'Read More'}
+          <ArrowRight className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-90' : ''}`} />
+        </Button>
+
+        {/* Expanded Content */}
+        {isExpanded && feature.expandedContent && (
+          <div className="mt-4 space-y-4 animate-in fade-in duration-500">
+            {/* Details Section */}
+            <div>
+              <h4 className="font-semibold text-gray-800 mb-2">What You'll Learn:</h4>
+              <ul className="space-y-2">
+                {feature.expandedContent.details.map((detail, idx) => (
+                  <li key={idx} className="flex items-start gap-2 text-gray-600">
+                    <div className="w-1.5 h-1.5 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <span>{detail}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Benefits Section */}
+            <div>
+              <h4 className="font-semibold text-gray-800 mb-2">Key Benefits:</h4>
+              <div className="flex flex-wrap gap-2">
+                {feature.expandedContent.benefits.map((benefit, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-block bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 px-3 py-1 rounded-full text-sm font-medium border border-green-200"
+                  >
+                    {benefit}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Feature Image */}
+            <div className="pt-2">
+              <img
+                src={feature.image}
+                alt={feature.title}
+                className="w-full h-48 object-cover rounded-xl shadow-md transform hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Footer Component
+const Footer = () => {
+  return (
+    <footer className="bg-gradient-elegant border-t border-border mt-20">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Brand Section */}
+          <div className="space-y-4">
+            <div className="flex items-center space-x-3">
+              <span className="text-xl font-serif font-bold text-gradient-gold">
+                Kishor Fashions
+              </span>
+            </div>
+            <p className="text-muted-foreground leading-relaxed">
+              Empowering creativity through the art of tailoring. Learn, create, and excel in boutique design with expert guidance.
+            </p>
+          </div>
+
+          {/* Contact Info */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-serif font-bold text-primary">Contact Us</h3>
+            <div className="space-y-3">
+              <div className="flex items-start space-x-3">
+                <Phone className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-muted-foreground">+91 95504 58132</span>
+              </div>
+              <div className="flex items-start space-x-3">
+                <Phone className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-muted-foreground">+91 95025 68049</span>
+              </div>
+              <div className="flex items-start space-x-3">
+                <Mail className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-muted-foreground">krstylecorner@gmail.com</span>
+              </div>
+              <div className="flex items-start space-x-3">
+                <MapPin className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-muted-foreground">
+                  Kishor Fashion Boutique Training Center, KPHB Road Number 6, Dharmareddy Colony Phase-1, Opp Sitara Hostel, Hyderabad, Pin Code - 500072
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Social Links */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-serif font-bold text-primary">Follow Us</h3>
+            <div className="flex space-x-4">
+              <a
+                href="https://wa.me/919550458132"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-secondary rounded-full hover-lift transition-all"
+                aria-label="WhatsApp"
+              >
+                <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+              </a>
+              <a
+                href="https://www.instagram.com/kishor_fashions_/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-secondary rounded-full hover-lift transition-all"
+                aria-label="Instagram"
+              >
+                <Instagram className="w-5 h-5 text-primary" />
+              </a>
+              <a
+                href="https://www.youtube.com/@Kishor_fashion_tailoring_class"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-secondary rounded-full hover-lift transition-all"
+                aria-label="Youtube"
+              >
+                <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Copyright */}
+        <div className="mt-12 pt-8 border-t border-border text-center">
+          <p className="text-muted-foreground">
+            © {new Date().getFullYear()} Kishor Fashions. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
   );
 };
 
@@ -379,7 +602,6 @@ const Home = () => {
                         </p>
                       </div>
                       <div className="text-right transform group-hover:translate-x-[-4px] transition-transform duration-300">
-
                         <div className="text-sm text-white/80">
                           {collection.items}
                         </div>
@@ -401,9 +623,6 @@ const Home = () => {
                         <ArrowRight className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
                       </Button>
                     </Link>
-                    <div className="flex items-center space-x-2 text-gray-600 transform group-hover:scale-105 transition-transform duration-300">
-
-                    </div>
                   </div>
                 </div>
 
@@ -425,34 +644,18 @@ const Home = () => {
             <div className="space-y-8">
               <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full border border-white/20 shadow-soft transform hover:scale-105 transition-all duration-300">
                 <Award className="w-5 h-5 text-purple-600" />
-                <span className="text-lg font-bold text-purple-700">Why Choose Our Botique</span>
+                <span className="text-lg font-bold text-purple-700">Why Choose Our Boutique</span>
               </div>
               <h2 className="text-5xl md:text-6xl font-serif font-bold text-gray-800 leading-tight transform hover:scale-105 transition-transform duration-500">
                 Beyond <span className="bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">Fashion</span>
               </h2>
               <p className="text-xl text-gray-600 leading-relaxed transform hover:translate-y-1 transition-transform duration-300">
-                We don't just create clothing; we craft experiences. Every piece is a testament to our commitment to excellence, innovation, and timeless beauty.
+                At Kishor Fashions, we don't just teach tailoring — we build confidence, creativity, and career paths.
               </p>
 
               <div className="space-y-6">
                 {features.map((feature, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start space-x-4 group p-4 rounded-2xl hover:bg-white/50 transition-all duration-300 transform hover:translate-x-2"
-                    style={{ transitionDelay: `${index * 100}ms` }}
-                  >
-                    <div className={`p-3 rounded-xl bg-gradient-to-r ${feature.gradient} transform group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300`}>
-                      <feature.icon className="w-6 h-6 text-white transform group-hover:scale-110 transition-transform duration-300" />
-                    </div>
-                    <div className="transform group-hover:translate-x-1 transition-transform duration-300">
-                      <h3 className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-gray-900 transition-colors duration-300">
-                        {feature.title}
-                      </h3>
-                      <p className="text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
-                        {feature.description}
-                      </p>
-                    </div>
-                  </div>
+                  <FeatureCard key={index} feature={feature} index={index} />
                 ))}
               </div>
             </div>
@@ -517,7 +720,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Enhanced Testimonials */}
+      {/* Enhanced Testimonials - Updated for 4 cards in a row */}
       <section
         ref={el => sectionRefs.current[4] = el}
         className="relative py-24 bg-white/80 backdrop-blur-sm"
@@ -528,44 +731,43 @@ const Home = () => {
               Our <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Creative Team</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto transform hover:translate-y-1 transition-transform duration-300">
-              Discover why discerning clients choose Élégance for their most important moments
+              Meet the talented professionals behind Kishor Fashions' exceptional craftsmanship
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {testimonials.map((testimonial, index) => (
               <div
                 key={index}
-                className="group relative bg-gradient-to-br from-white to-gray-50/50 rounded-3xl p-8 shadow-soft hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:rotate-1 border border-white/20"
+                className="group relative bg-gradient-to-br from-white to-gray-50/50 rounded-3xl p-6 shadow-soft hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:rotate-1 border border-white/20"
                 style={{ transitionDelay: `${index * 200}ms` }}
               >
-                <div className="flex items-center space-x-4 mb-6">
+                <div className="flex flex-col items-center text-center mb-6">
                   <img
                     src={testimonial.image}
                     alt={testimonial.name}
-                    className="w-16 h-16 rounded-full object-cover border-2 border-amber-400 shadow-lg transform group-hover:scale-110 transition-transform duration-300"
+                    className="w-20 h-20 rounded-full object-cover border-2 border-amber-400 shadow-lg transform group-hover:scale-110 transition-transform duration-300 mb-4"
                   />
-                  <div className="transform group-hover:translate-x-1 transition-transform duration-300">
-                    <div className="font-bold text-xl text-gray-800 group-hover:text-gray-900 transition-colors duration-300">
+                  <div className="transform group-hover:translate-y-1 transition-transform duration-300">
+                    <div className="font-bold text-lg text-gray-800 group-hover:text-gray-900 transition-colors duration-300">
                       {testimonial.name}
                     </div>
-                    <div className="text-gray-600 font-semibold group-hover:text-gray-700 transition-colors duration-300">
+                    <div className="text-gray-600 text-sm font-semibold group-hover:text-gray-700 transition-colors duration-300">
                       {testimonial.role}
                     </div>
                   </div>
                 </div>
 
-
-
-                <p className="text-gray-700 text-lg leading-relaxed mb-6 italic transform group-hover:translate-x-1 transition-transform duration-300">
+                <p className="text-gray-700 text-sm leading-relaxed mb-4 italic text-center transform group-hover:translate-y-1 transition-transform duration-300">
                   "{testimonial.content}"
                 </p>
 
-                <div className="text-sm text-amber-600 font-medium pt-4 border-t border-gray-200 transform group-hover:translate-x-1 transition-transform duration-300">
+                <div className="text-xs text-amber-600 font-medium text-center pt-4 border-t border-gray-200 transform group-hover:translate-y-1 transition-transform duration-300">
                   {testimonial.beforeAfter}
                 </div>
 
-
+                {/* Hover shine effect */}
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               </div>
             ))}
           </div>
@@ -603,14 +805,13 @@ const Home = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12">
-            <Link to="/products">
+            <Link to="/contact">
               <Button size="lg" className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white shadow-2xl transform hover:scale-105 hover:rotate-1 transition-all duration-300 font-bold text-lg px-8 py-6">
                 <Sparkles className="w-5 h-5 mr-3 transform group-hover:scale-110 transition-transform duration-300" />
                 Book Private Consultation
                 <ArrowRight className="w-5 h-5 ml-3 transform group-hover:translate-x-1 transition-transform duration-300" />
               </Button>
             </Link>
-
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto text-white/60">
@@ -628,91 +829,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-6 transform hover:scale-105 transition-transform duration-300">
-                
-                <span className="text-2xl font-serif font-bold">Kishor Botique</span>
-              </div>
-              <p className="text-gray-400 leading-relaxed transform hover:translate-y-1 transition-transform duration-300">
-                Crafting timeless elegance through bespoke tailoring and luxury fashion
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-lg mb-6 transform hover:translate-x-1 transition-transform duration-300">Quick Links</h3>
-              <div className="space-y-3">
-                {['Collections', 'Bespoke Tailoring', 'About Us', 'Client Stories'].map((item) => (
-                  <Link key={item} to="#" className="block text-gray-400 hover:text-amber-300 transition-all duration-300 hover:translate-x-2">
-                    {item}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-lg mb-6 transform hover:translate-x-1 transition-transform duration-300">Contact</h3>
-              <div className="space-y-3 text-gray-400">
-                <div className="flex items-center space-x-3 transform hover:translate-x-1 transition-transform duration-300">
-                  <MapPin className="w-4 h-4 text-amber-400" />
-                  <span>Kphb, Road No. 6, opp. sitara hostel, Dharma Reddy Colony Phase I, Hyderabad, Telangana 500072</span>
-                </div>
-                <div className="flex items-center space-x-3 transform hover:translate-x-1 transition-transform duration-300">
-                  <Phone className="w-4 h-4 text-amber-400" />
-                  <span>8147862367
-                  </span>
-                </div>
-                <div className="flex items-center space-x-3 transform hover:translate-x-1 transition-transform duration-300">
-                  <Mail className="w-4 h-4 text-amber-400" />
-                  <span>kishorfashions@gamil.com</span>
-                </div>
-              </div>
-            </div>
-
-     <div>
-  <h3 className="font-semibold text-lg mb-6 transform hover:translate-x-1 transition-transform duration-300 text-gray-200">
-    Follow Us
-  </h3>
-  <div className="flex flex-col space-y-3">
-    <a
-      href="https://wa.me/8147862367"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-gray-300 font-medium hover:text-black transition-colors duration-300"
-    >
-      WhatsApp
-    </a>
-
-    <a
-      href="https://www.instagram.com/kishor_fashions_/"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-gray-300 font-medium hover:text-black transition-colors duration-300"
-    >
-      Instagram
-    </a>
-
-    <a
-      href="https://www.youtube.com/@Kishor_fashion_tailoring_class"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-gray-300 font-medium hover:text-black transition-colors duration-300"
-    >
-      YouTube
-    </a>
-  </div>
-</div>
-
-          </div>
-
-          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-            <p className="transform hover:scale-105 transition-transform duration-300">&copy; Kishor Boutique. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      {/* Use the Footer Component */}
+      <Footer />
     </div>
   );
 };
