@@ -27,7 +27,8 @@ const allowedOrigins = [            // For Vite development
   'http://localhost:8080',                 // <-- THE FIX: Added your specific local origin
   'https://kishore-fashions-1.onrender.com/'  ,// Your deployed Netlify frontend
   'https://kishore-fashions-2z6j.onrender.com',
-  "https://kishorfashions.netlify.app"
+  "https://kishorfashions.netlify.app",
+  "http://kishorfashiontailoringclasses.com"
 ];
 
 const corsOptions = {

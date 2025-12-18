@@ -29,7 +29,6 @@ const About = () => {
   const trainingImages = [
     "http://3.bp.blogspot.com/-tWiLIo7X5rM/UcI2MQNZh7I/AAAAAAAAC5c/3UV0YYmGDYw/s1600/1019-14.jpg",
     "https://kaurboutique.com/wp-content/uploads/2022/04/ulteration.png",
-    "https://generisonline.com/wp-content/uploads/2022/06/best-womens-boutiques-in-charlotte.jpg",
     "https://enjoycouture.com/wp-content/uploads/2021/05/vignette-couture-entreprenariat-article-de-blog.jpg"
   ];
 
