@@ -9,10 +9,10 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { PlusCircle, Trash2, Edit, PackageX, Loader2 } from "lucide-react";
+import { PlusCircle, Trash2, Edit, PackageX, Loader2, CheckCircle, Upload, Image as ImageIcon, AlertCircle, X } from "lucide-react";
 import { AdminForm } from "./AdminForm";
 import { Product, CurrentFormState, FormDataType } from "@/types";
-import { ChangeEvent, FormEvent, useState, useEffect } from "react";
+import { ChangeEvent, FormEvent, useState, useEffect, useRef } from "react";
 
 // Define the base URL for your API, loaded from environment variables
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
@@ -45,6 +45,11 @@ export const ProductsManager = (props: Product[]) => {
   const [currentForm, setCurrentForm] = useState<CurrentFormState>({ type: null, data: {}, isEditing: false });
   const [isLoading, setIsLoading] = useState(true); // Manages loading for fetch/delete
   const [isSubmitting, setIsSubmitting] = useState(false); // Manages loading for form submission
+  const [hasImageAttached, setHasImageAttached] = useState(false); // Track if image is attached
+  const [selectedFileName, setSelectedFileName] = useState<string>(""); // Track selected file name
+  const [imageError, setImageError] = useState<string>(""); // Validation error for image
+  const [imagePreview, setImagePreview] = useState<string | null>(null); // For image preview
+  const fileInputRef = useRef<HTMLInputElement>(null); // Ref for file input
 
   // --- DATA FETCHING ---
   useEffect(() => {
@@ -66,17 +71,62 @@ export const ProductsManager = (props: Product[]) => {
 
   // --- HANDLER FUNCTIONS ---
   const openForm = (type: string, data: FormDataType = {}, isEditing = false) => {
+    // Check if we're editing and the product has an existing image
+    const hasExistingImage = isEditing && data.image;
+    setHasImageAttached(!!hasExistingImage);
+    setImageError(""); // Clear any previous errors
+    setImagePreview(null); // Clear preview
+    
+    if (hasExistingImage && typeof data.image === 'string') {
+      setSelectedFileName(data.image.split('/').pop() || "Existing image");
+      setImagePreview(data.image); // Set preview for existing image
+    } else {
+      setSelectedFileName("");
+    }
     setCurrentForm({ type, data, isEditing });
   };
 
   const handleCancelForm = () => {
     setCurrentForm({ type: null, data: {}, isEditing: false });
+    setHasImageAttached(false);
+    setSelectedFileName("");
+    setImageError("");
+    setImagePreview(null);
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       setCurrentForm(prev => ({ ...prev, data: { ...prev.data, image: file } }));
+      setHasImageAttached(true);
+      setSelectedFileName(file.name);
+      setImageError(""); // Clear error when file is selected
+      
+      // Create preview URL for the selected file
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setHasImageAttached(false);
+      setSelectedFileName("");
+      setImagePreview(null);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setHasImageAttached(false);
+    setSelectedFileName("");
+    setImagePreview(null);
+    setCurrentForm(prev => ({ ...prev, data: { ...prev.data, image: undefined } }));
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -99,12 +149,22 @@ export const ProductsManager = (props: Product[]) => {
 
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    
+    // Validate image field
+    if (!currentForm.isEditing && !hasImageAttached) {
+      setImageError("Product image is required");
+      return;
+    }
+    
     setIsSubmitting(true);
+    setImageError(""); // Clear any previous errors
 
     const { data, isEditing } = currentForm;
     const formData = new FormData();
     Object.keys(data).forEach(key => {
-      formData.append(key, data[key]);
+      if (data[key] !== undefined) {
+        formData.append(key, data[key]);
+      }
     });
 
     const url = isEditing
@@ -135,7 +195,6 @@ export const ProductsManager = (props: Product[]) => {
     { name: 'title', label: 'Product Name', placeholder: 'Enter product name' },
     { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Enter product description' },
     { name: 'price', label: 'Price', type: 'number', placeholder: 'e.g., 29.99' },
-    { name: 'image', label: 'Product Image', type: 'file', placeholder: '' },
   ];
 
   // --- RENDER LOGIC ---
@@ -166,8 +225,13 @@ export const ProductsManager = (props: Product[]) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {products.map(product => (
           <Card key={product._id} className="overflow-hidden group transition-all duration-300 hover:shadow-xl hover:border-blue-500/50">
-            <div className="relative">
-              <img src={product.image} alt={product.title} className="h-56 w-full object-cover" />
+            <div className="relative bg-gray-100">
+              {/* Changed from object-cover to object-contain to show full image */}
+              <img 
+                src={product.image} 
+                alt={product.title} 
+                className="h-56 w-full object-contain bg-white"
+              />
               <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <Button variant="outline" size="sm" onClick={() => openForm('products', product, true)} className="text-white bg-black/50 border-white/50 hover:bg-white hover:text-black" disabled={isLoading}>
                   <Edit className="w-4 h-4 mr-2" />
@@ -204,7 +268,7 @@ export const ProductsManager = (props: Product[]) => {
       </div>
 
       <Dialog open={currentForm.type === 'products'} onOpenChange={(isOpen) => !isOpen && handleCancelForm()}>
-        <DialogContent className="sm:max-w-[650px]">
+        <DialogContent className="sm:max-w-[650px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center">
               {currentForm.isEditing ? 'Edit Product' : 'Add New Product'}
@@ -215,16 +279,195 @@ export const ProductsManager = (props: Product[]) => {
               {isSubmitting && <span className="block mt-1 text-blue-600 font-medium">Submitting...</span>}
             </DialogDescription>
           </DialogHeader>
-          <AdminForm
-            fields={productFields}
-            formData={currentForm.data}
-            setFormData={(d) => setCurrentForm(prev => ({ ...prev, data: d }))}
-            onFileChange={handleFileChange}
-            onSubmit={handleFormSubmit}
-            onCancel={handleCancelForm}
-            isEditing={currentForm.isEditing}
-            isLoading={isSubmitting}
-          />
+          
+          <form onSubmit={handleFormSubmit} className="space-y-6">
+            {/* Title Field */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Product Name *</label>
+              <input
+                type="text"
+                value={currentForm.data.title || ""}
+                onChange={(e) => setCurrentForm(prev => ({ 
+                  ...prev, 
+                  data: { ...prev.data, title: e.target.value } 
+                }))}
+                placeholder="Enter product name"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            {/* Description Field */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Description *</label>
+              <textarea
+                value={currentForm.data.description || ""}
+                onChange={(e) => setCurrentForm(prev => ({ 
+                  ...prev, 
+                  data: { ...prev.data, description: e.target.value } 
+                }))}
+                placeholder="Enter product description"
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            {/* Price Field */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Price *</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={currentForm.data.price || ""}
+                onChange={(e) => setCurrentForm(prev => ({ 
+                  ...prev, 
+                  data: { ...prev.data, price: parseFloat(e.target.value) || 0 } 
+                }))}
+                placeholder="e.g., 29.99"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            {/* Image Field */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium">Product Image *</label>
+                {hasImageAttached && (
+                  <div className="flex items-center gap-1 text-sm font-medium text-green-600">
+                    <CheckCircle className="w-4 h-4" />
+                    <span>Image attached</span>
+                  </div>
+                )}
+              </div>
+              
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-500 transition-colors">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  id="image-upload"
+                  ref={fileInputRef}
+                />
+                <label
+                  htmlFor="image-upload"
+                  className="cursor-pointer flex flex-col items-center justify-center space-y-2"
+                >
+                  {hasImageAttached ? (
+                    <>
+                      <ImageIcon className="w-8 h-8 text-green-500" />
+                      <div className="text-center">
+                        <p className="text-sm font-medium text-gray-700">
+                          ✓ {selectedFileName}
+                        </p>
+                        <p className="text-xs text-gray-500">Click to change image</p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-8 h-8 text-gray-400" />
+                      <div className="text-center">
+                        <p className="text-sm font-medium text-gray-700">
+                          Click to upload product image
+                        </p>
+                        <p className="text-xs text-gray-500">PNG, JPG, JPEG up to 10MB</p>
+                      </div>
+                    </>
+                  )}
+                </label>
+              </div>
+
+              {/* Show image preview at bottom */}
+              {imagePreview && (
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-medium text-gray-700">Image Preview:</p>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleRemoveImage}
+                      className="h-6 w-6 p-0 hover:bg-red-50 hover:text-red-600"
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </div>
+                  <div className="flex items-center justify-center bg-white p-2 rounded border border-gray-200">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="max-h-48 max-w-full rounded-md object-contain"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2 text-center truncate">
+                    {selectedFileName}
+                  </p>
+                </div>
+              )}
+
+              {/* Show existing image URL when editing */}
+              {currentForm.isEditing && currentForm.data.image && typeof currentForm.data.image === 'string' && !hasImageAttached && !imagePreview && (
+                <div className="mt-2 p-3 bg-blue-50 rounded border border-blue-200">
+                  <div className="flex items-center gap-2 mb-1">
+                    <ImageIcon className="w-4 h-4 text-blue-600" />
+                    <p className="text-sm font-medium text-blue-800">Current image:</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-white p-1 rounded border">
+                      <img 
+                        src={currentForm.data.image} 
+                        alt="Current product" 
+                        className="w-12 h-12 object-contain"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600 truncate">{currentForm.data.image}</p>
+                      <p className="text-xs text-gray-500 mt-1">Upload a new image to replace the current one</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Image validation error */}
+              {imageError && (
+                <div className="flex items-center gap-2 text-red-600 text-sm mt-2">
+                  <AlertCircle className="w-4 h-4" />
+                  <span>{imageError}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Form Actions */}
+            <div className="flex justify-end gap-3 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleCancelForm}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    {currentForm.isEditing ? 'Updating...' : 'Creating...'}
+                  </>
+                ) : (
+                  <>
+                    {currentForm.isEditing ? 'Update Product' : 'Create Product'}
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
         </DialogContent>
       </Dialog>
 

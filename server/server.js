@@ -12,7 +12,8 @@ import productRoutes from "./routes/product.routes.js";
 import portfolioRoutes from "./routes/portfolio.routes.js";
 import contactRoutes from "./routes/contact.routes.js";
 
-
+import aboutRoutes from "./routes/about.routes.js"; 
+import teamRoutes from "./routes/team.routes.js"; // <-- Add this
 // --- 1. INITIAL SERVER SETUP ---
 dotenv.config();
 const app = express();
@@ -64,7 +65,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/portfolio", portfolioRoutes);
 app.use("/api/contact", contactRoutes);
-
+app.use("/api/about", aboutRoutes); 
+app.use("/api/team", teamRoutes); // <-- Add this
 // --- 6. ROOT ROUTE FOR HEALTH CHECK ---
 app.get("/", (req, res) => {
   res.send("Elegant Stitches API is running...");

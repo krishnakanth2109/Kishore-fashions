@@ -1,8 +1,17 @@
-// src/components/admin/Sidebar.tsx
-
 import { Button } from "@/components/ui/button";
 import {
-  BarChart3, Package, Image, Video, Contact, LogOut, User, X, ChevronLeft, ChevronRight, FileText
+  BarChart3, 
+  Package, 
+  Image, 
+  Video, 
+  Contact, 
+  LogOut, 
+  X, 
+  ChevronLeft, 
+  ChevronRight, 
+  FileText, 
+  Sparkles,
+  Users // ✅ Added Users icon for the Team section
 } from "lucide-react";
 
 interface SidebarProps {
@@ -15,29 +24,63 @@ interface SidebarProps {
   onToggleCollapse: () => void;
 }
 
-export const Sidebar = ({ activeTab, setActiveTab, isMobileOpen, setIsMobileOpen, onLogout, isCollapsed, onToggleCollapse }: SidebarProps) => {
+export const Sidebar = ({ 
+  activeTab, 
+  setActiveTab, 
+  isMobileOpen, 
+  setIsMobileOpen, 
+  onLogout, 
+  isCollapsed, 
+  onToggleCollapse 
+}: SidebarProps) => {
+  
   const menuItems = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
     { id: 'products', label: 'Products', icon: Package },
     { id: 'portfolio', label: 'Portfolio', icon: Image },
     { id: 'videos', label: 'Videos', icon: Video },
+    { id: 'stories', label: 'Success Stories', icon: Sparkles },
+    { id: 'team', label: 'Creative Team', icon: Users }, // ✅ ADDED THIS ITEM
     { id: 'contact', label: 'Contact Info', icon: Contact },
-    // THE FIX: Changed the ID from 'form' to 'messages' to match Admin.tsx
     { id: 'messages', label: 'Requested form', icon: FileText }, 
   ];
 
   return (
     <>
-      {isMobileOpen && <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onClick={() => setIsMobileOpen(false)} />}
+      {/* Mobile Overlay */}
+      {isMobileOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" 
+          onClick={() => setIsMobileOpen(false)} 
+        />
+      )}
+
+      {/* Sidebar Container */}
       <div className={`fixed lg:sticky inset-y-0 left-0 z-50 bg-gradient-to-b from-gray-900 to-gray-800 text-white transform transition-all duration-300 ease-in-out ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} ${isCollapsed ? 'w-20' : 'w-64'} h-screen top-0`}>
         <div className="flex flex-col h-full">
+          
           {/* Header Section */}
           <div className="flex-shrink-0 p-4 border-b border-gray-700">
             <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
-              {!isCollapsed && <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-200 bg-clip-text text-transparent">Kishor Botique</h1>}
+              {!isCollapsed && (
+                <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-200 bg-clip-text text-transparent">
+                  Kishor Boutique
+                </h1>
+              )}
               <div className="flex items-center gap-2">
-                <button onClick={() => setIsMobileOpen(false)} className="lg:hidden p-2 hover:bg-gray-700 rounded-lg transition-colors"><X className="w-4 h-4" /></button>
-                <button onClick={onToggleCollapse} className="hidden lg:flex p-2 hover:bg-gray-700 rounded-lg transition-colors" title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}>
+                {/* Mobile Close Button */}
+                <button 
+                  onClick={() => setIsMobileOpen(false)} 
+                  className="lg:hidden p-2 hover:bg-gray-700 rounded-lg transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+                {/* Desktop Collapse Button */}
+                <button 
+                  onClick={onToggleCollapse} 
+                  className="hidden lg:flex p-2 hover:bg-gray-700 rounded-lg transition-colors" 
+                  title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                >
                   {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
                 </button>
               </div>
@@ -66,17 +109,14 @@ export const Sidebar = ({ activeTab, setActiveTab, isMobileOpen, setIsMobileOpen
           {/* Footer Section */}
           <div className="flex-shrink-0 p-4 border-t border-gray-700 mt-auto">
             {!isCollapsed ? (
-              <>
-         
-                <Button 
-                  onClick={onLogout} 
-                  variant="outline" 
-                  className="w-full justify-start bg-transparent border-gray-600 text-gray-300 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-200"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Logout
-                </Button>
-              </>
+              <Button 
+                onClick={onLogout} 
+                variant="outline" 
+                className="w-full justify-start bg-transparent border-gray-600 text-gray-300 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-200"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
             ) : (
               <div className="space-y-2">
                 <button 

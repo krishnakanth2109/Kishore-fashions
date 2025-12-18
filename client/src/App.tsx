@@ -13,6 +13,9 @@ import Login from "./pages/Login"; // Import the new Login page
 import ProtectedRoute from "./components/ProtectedRoute"; // Import the ProtectedRoute component
 import NotFound from "./pages/NotFound";
 import Services from "./pages/services";
+import ScrollToTop from "./pages/ScrollToTop";
+import ScrollToTopButton from "./pages/ScrollToTopButton";
+
 
 const queryClient = new QueryClient();
 
@@ -41,6 +44,9 @@ const App = () => (
           {/* Catch-all 404 Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <ScrollToTop />
+        {/* ✅ GLOBAL SCROLL TO TOP BUTTON */}
+        <ScrollToTopButton />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

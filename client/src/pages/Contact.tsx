@@ -19,6 +19,8 @@ const Contact = () => {
   const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hoveredField, setHoveredField] = useState("");
+  // New state for validation errors
+  const [errors, setErrors] = useState<{ phone?: string }>({});
 
   useEffect(() => {
     const fetchContactInfo = async () => {
@@ -33,8 +35,34 @@ const Contact = () => {
     fetchContactInfo();
   }, []);
 
+  // Validation Logic
+  const validateForm = () => {
+    const newErrors: { phone?: string } = {};
+    const phoneRegex = /^[0-9]{10}$/; // Expecting exactly 10 digits
+
+    if (!formData.phone) {
+      newErrors.phone = "Phone number is required";
+    } else if (!phoneRegex.test(formData.phone)) {
+      newErrors.phone = "Please enter a valid 10-digit phone number";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check validation before submitting
+    if (!validateForm()) {
+      toast({
+        title: "Validation Error",
+        description: "Please check the errors in the form.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
@@ -51,6 +79,7 @@ const Contact = () => {
         description: "Thank you for contacting us. We'll get back to you soon.",
       });
       setFormData({ name: "", email: "", phone: "", message: "" });
+      setErrors({}); // Clear errors on success
     } catch (error) {
       toast({
         title: "Error",
@@ -63,7 +92,26 @@ const Contact = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Specific logic for phone input to allow only numbers
+    if (name === "phone") {
+      // If the value contains anything other than numbers, don't update (unless it's empty)
+      if (value && !/^\d+$/.test(value)) {
+        return;
+      }
+      // Limit to 10 characters
+      if (value.length > 10) {
+        return;
+      }
+    }
+
+    setFormData({ ...formData, [name]: value });
+
+    // Clear error for the specific field when user types
+    if (errors[name as keyof typeof errors]) {
+      setErrors({ ...errors, [name]: undefined });
+    }
   };
 
   const handleWhatsAppClick = () => {
@@ -93,7 +141,7 @@ const Contact = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.7 }}
-            className="text-5xl md:text-6xl font-serif font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent mb-6"
+            className="text-5xl md:text-6xl font-serif font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent mb-6 p-2"
           >
             Let's Create Magic Together
           </motion.h1>
@@ -154,11 +202,22 @@ const Contact = () => {
                         value={formData[field.name as keyof typeof formData]}
                         onChange={handleChange}
                         placeholder={field.placeholder}
-                        required
-                        className="w-full px-4 py-4 rounded-2xl border-2 border-pink-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition-all duration-300 bg-white/50 backdrop-blur-sm text-lg"
+                        required={field.name !== 'phone'} // Validation handled manually for phone
+                        // Check if error exists for this field to change border color
+                        className={`w-full px-4 py-4 rounded-2xl border-2 ${
+                          errors[field.name as keyof typeof errors] 
+                            ? "border-red-400 focus:border-red-500" 
+                            : "border-pink-200 focus:border-pink-400"
+                        } focus:ring-2 focus:ring-pink-100 outline-none transition-all duration-300 bg-white/50 backdrop-blur-sm text-lg`}
                         onMouseEnter={() => setHoveredField(field.name)}
                         onMouseLeave={() => setHoveredField("")}
                       />
+                      {/* Display validation error message */}
+                      {errors[field.name as keyof typeof errors] && (
+                        <p className="text-red-500 text-sm mt-1 ml-2">
+                          {errors[field.name as keyof typeof errors]}
+                        </p>
+                      )}
                     </motion.div>
                   ))}
                   

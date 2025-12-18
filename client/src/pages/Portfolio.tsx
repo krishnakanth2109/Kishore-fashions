@@ -150,21 +150,7 @@ const Portfolio = () => {
               Glimpse into our creative process and fashion journey
             </p>
 
-            {/* Filter Tabs */}
-            <div className="flex flex-wrap justify-center gap-4 mb-12">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setActiveFilter(category)}
-                  className={`px-6 py-3 rounded-full font-medium capitalize transition-all duration-300 transform hover:scale-105 ${activeFilter === category
-                      ? "bg-rose-600 text-white shadow-lg"
-                      : "bg-white text-rose-700 border border-pink-200 hover:bg-pink-50 hover:border-pink-300"
-                    }`}
-                >
-                  {category.replace("-", " ")}
-                </button>
-              ))}
-            </div>
+       
           </div>
 
           {loading ? (

@@ -49,7 +49,7 @@ const ContactTable = () => {
 
   if (loading) {
     return (
-      <div className="p-4 sm:p-6 bg-gray-50 min-h-screen flex items-center justify-center">
+      <div className="w-full p-4 sm:p-6 bg-gray-50 flex items-center justify-center h-full">
         <div className="text-center">
           <p className="text-gray-600">Loading messages...</p>
         </div>
@@ -58,7 +58,8 @@ const ContactTable = () => {
   }
 
   return (
-    <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
+    // UPDATED: Added w-full and overflow-hidden to prevent sidebar shifting
+    <div className="w-full p-4 sm:p-6 bg-gray-50 overflow-hidden">
       <h2 className="text-3xl font-serif font-bold text-gray-800 text-center mb-6">Contact Form Messages</h2>
       
       {error && (
@@ -67,64 +68,89 @@ const ContactTable = () => {
         </div>
       )}
 
-      <div className="overflow-x-auto shadow-xl rounded-2xl bg-white max-w-7xl mx-auto">
-        <table className="min-w-full border-collapse text-sm table-fixed">
-          <colgroup>
-            <col style={{ width: '15%' }} />
-            <col style={{ width: '20%' }} />
-            <col style={{ width: '15%' }} />
-            <col style={{ width: '30%' }} />
-            <col style={{ width: '15%' }} />
-            <col style={{ width: '5%' }} />
-          </colgroup>
-          <thead className="bg-pink-100 text-pink-900 uppercase">
-            <tr>
-              <th className="px-6 py-3 text-left font-semibold tracking-wider">Name</th>
-              <th className="px-6 py-3 text-left font-semibold tracking-wider">Email</th>
-              <th className="px-6 py-3 text-left font-semibold tracking-wider">Phone</th>
-              <th className="px-6 py-3 text-left font-semibold tracking-wider">Message</th>
-              <th className="px-6 py-3 text-left font-semibold tracking-wider">Received</th>
-              <th className="px-6 py-3 text-left font-semibold tracking-wider">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {contacts.length > 0 ? (
-              contacts.map((contact) => (
-                <tr key={contact._id} className="hover:bg-pink-50 transition-colors duration-200">
-                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 truncate">{contact.name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-600 truncate">
-                    <a href={`mailto:${contact.email}`} className="hover:text-pink-600 transition-colors">
-                      {contact.email}
-                    </a>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">{contact.phone || 'N/A'}</td>
-                  <td className="px-6 py-4 text-gray-700">
-                    <div className="max-h-24 overflow-y-auto whitespace-pre-wrap break-words">
-                        {contact.message}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-500">
-                    {new Date(contact.createdAt).toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <button
-                      onClick={() => handleDelete(contact._id)}
-                      className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
-                    >
-                      Delete
-                    </button>
+      {/* 
+        Responsive Container: 
+        On mobile/tablet, it shows cards. 
+        On desktop (md+), it shows the table.
+      */}
+      <div className="max-w-7xl mx-auto">
+        {/* UPDATED: Ensure overflow-x-auto is here to handle table width issues internally */}
+        <div className="overflow-x-auto w-full md:shadow-xl md:rounded-2xl md:bg-white">
+          <table className="min-w-full border-collapse text-sm w-full">
+            {/* Header: Hidden on mobile, visible on desktop (md) */}
+            <thead className="hidden md:table-header-group bg-pink-100 text-pink-900 uppercase">
+              <tr>
+                <th className="px-6 py-3 text-left font-semibold tracking-wider w-[15%]">Name</th>
+                <th className="px-6 py-3 text-left font-semibold tracking-wider w-[20%]">Email</th>
+                <th className="px-6 py-3 text-left font-semibold tracking-wider w-[15%]">Phone</th>
+                <th className="px-6 py-3 text-left font-semibold tracking-wider w-[30%]">Message</th>
+                <th className="px-6 py-3 text-left font-semibold tracking-wider w-[15%]">Received</th>
+                <th className="px-6 py-3 text-center font-semibold tracking-wider w-[5%]">Action</th>
+              </tr>
+            </thead>
+            
+            <tbody className="block md:table-row-group divide-y divide-gray-200">
+              {contacts.length > 0 ? (
+                contacts.map((contact) => (
+                  <tr 
+                    key={contact._id} 
+                    className="block md:table-row bg-white hover:bg-pink-50 transition-colors duration-200 mb-4 md:mb-0 rounded-xl shadow-md md:shadow-none border md:border-0 p-4 md:p-0"
+                  >
+                    {/* Name */}
+                    <td className="block md:table-cell px-4 py-2 md:px-6 md:py-4 whitespace-nowrap font-medium text-gray-900 md:truncate">
+                      <span className="md:hidden font-bold text-pink-800 block text-xs uppercase mb-1">Name</span>
+                      {contact.name}
+                    </td>
+
+                    {/* Email */}
+                    <td className="block md:table-cell px-4 py-2 md:px-6 md:py-4 whitespace-nowrap text-gray-600 md:truncate">
+                      <span className="md:hidden font-bold text-pink-800 block text-xs uppercase mb-1">Email</span>
+                      <a href={`mailto:${contact.email}`} className="hover:text-pink-600 transition-colors break-all">
+                        {contact.email}
+                      </a>
+                    </td>
+
+                    {/* Phone */}
+                    <td className="block md:table-cell px-4 py-2 md:px-6 md:py-4 whitespace-nowrap text-gray-600">
+                      <span className="md:hidden font-bold text-pink-800 block text-xs uppercase mb-1">Phone</span>
+                      {contact.phone || 'N/A'}
+                    </td>
+
+                    {/* Message */}
+                    <td className="block md:table-cell px-4 py-2 md:px-6 md:py-4 text-gray-700">
+                      <span className="md:hidden font-bold text-pink-800 block text-xs uppercase mb-1">Message</span>
+                      <div className="max-h-32 md:max-h-24 overflow-y-auto whitespace-pre-wrap break-words bg-gray-50 md:bg-transparent p-2 md:p-0 rounded border md:border-0">
+                          {contact.message}
+                      </div>
+                    </td>
+
+                    {/* Date */}
+                    <td className="block md:table-cell px-4 py-2 md:px-6 md:py-4 whitespace-nowrap text-gray-500">
+                      <span className="md:hidden font-bold text-pink-800 block text-xs uppercase mb-1">Received</span>
+                      {new Date(contact.createdAt).toLocaleString()}
+                    </td>
+
+                    {/* Action */}
+                    <td className="block md:table-cell px-4 py-3 md:px-6 md:py-4 whitespace-nowrap text-center border-t md:border-0 mt-2 md:mt-0">
+                      <button
+                        onClick={() => handleDelete(contact._id)}
+                        className="w-full md:w-auto px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr className="block md:table-row">
+                  <td colSpan={6} className="block md:table-cell text-center py-10 text-gray-500 bg-white md:bg-transparent rounded-xl shadow md:shadow-none">
+                    No messages have been received yet.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={6} className="text-center py-10 text-gray-500">
-                  No messages have been received yet.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

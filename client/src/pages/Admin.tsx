@@ -14,17 +14,22 @@ import { PortfolioManager } from "@/components/admin/PortfolioManager";
 import { VideosManager } from "@/components/admin/VideosManager";
 import { ContactManager } from "@/components/admin/ContactManager";
 import ContactTable from "@/components/admin/ContactTable";
+import SuccessStoriesManager from "@/components/admin/SuccessStoriesManager";
+import TeamManager from "@/components/admin/TeamManager"; // ✅ NEW IMPORT
 
 const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 const Admin = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  
+  // Data State
   const [products, setProducts] = useState<Product[]>([]);
   const [portfolioImages, setPortfolioImages] = useState<PortfolioImage[]>([]);
   const [videos, setVideos] = useState<PortfolioVideo[]>([]);
   const [contactInfo, setContactInfo] = useState<ContactInfo>({});
 
+  // Form & UI State
   const [currentForm, setCurrentForm] = useState<CurrentFormState>({ type: null, data: {}, isEditing: false });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
@@ -39,13 +44,14 @@ const Admin = () => {
     }
   }, [navigate]);
 
+  // ✅ Fetch Dashboard Data
   const fetchData = async () => {
     try {
       const [productsRes, imagesRes, videosRes, contactRes] = await Promise.all([
-        fetch(`${API_URL}/api/products`),
-        fetch(`${API_URL}/api/portfolio/images`),
-        fetch(`${API_URL}/api/portfolio/videos`),
-        fetch(`${API_URL}/api/contact/info`),
+        fetch(`${API_URL}/products`),
+        fetch(`${API_URL}/portfolio/images`),
+        fetch(`${API_URL}/portfolio/videos`),
+        fetch(`${API_URL}/contact/info`),
       ]);
       setProducts(await productsRes.json());
       setPortfolioImages(await imagesRes.json());
@@ -80,6 +86,7 @@ const Admin = () => {
     }
   };
 
+  // ✅ Generic Form Submit Handler (Products, Portfolio, Videos)
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const { type, data, isEditing } = currentForm;
@@ -159,6 +166,7 @@ const Admin = () => {
     setSelectedFile(null);
   };
 
+  // ✅ Main Content Switcher
   const renderContent = () => {
     const commonProps = {
       currentForm,
@@ -177,6 +185,13 @@ const Admin = () => {
         return <PortfolioManager portfolioImages={portfolioImages} {...commonProps} />;
       case 'videos':
         return <VideosManager videos={videos} {...commonProps} />;
+      
+      case 'stories':
+        return <SuccessStoriesManager />;
+        
+      case 'team': // ✅ NEW CASE FOR TEAM MANAGER
+        return <TeamManager />;
+      
       case 'contact':
         return <ContactManager contactInfo={contactInfo} setContactInfo={setContactInfo} />;
       case 'messages':
@@ -188,6 +203,7 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex">
+      {/* Sidebar */}
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -198,6 +214,7 @@ const Admin = () => {
         onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
 
+      {/* Main Layout */}
       <div className={`flex-1 flex flex-col transition-all duration-300`}>
         <DashboardHeader
           activeTab={activeTab}

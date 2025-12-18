@@ -3,6 +3,20 @@ import { Scissors, Award, Users, Heart, Sparkles, Star, ArrowRight, Play, Instag
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
+import axios from "axios"; // ✅ Added axios for data fetching
+
+// ✅ Get API URL from .env
+const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
+// ✅ Define Interface for Dynamic Team Data
+interface TeamMember {
+  _id: string;
+  name: string;
+  image: string;
+  address: string; // Mapped to Role/Designation
+  content: string; // Mapped to Quote
+  description: string; // Mapped to Bottom text
+}
 
 // Dynamic image imports (replace with your actual images)
 const boutiqueImages = {
@@ -140,37 +154,6 @@ const collections = [
   }
 ];
 
-const testimonials = [
-  {
-    name: "T.Kishor",
-    role: "Fashion Director, Vogue",
-    content: "The attention to detail and quality of craftsmanship is unparalleled. Each piece feels like wearable art.",
-    image: "https://img.freepik.com/premium-photo/face-young-handsome-indian-man_251136-20685.jpg",
-    beforeAfter: "Client for 5+ years"
-  },
-  {
-    name: "Shaed",
-    role: "Celebrity Stylist",
-    content: "Working with this boutique transformed how I approach red carpet styling. The quality is exceptional.",
-    image: "https://st.depositphotos.com/1011643/4430/i/950/depositphotos_44309759-stock-photo-young-indian-man-outdoors.jpg",
-    beforeAfter: "30+ celebrity clients dressed"
-  },
-  {
-    name: "T.Lavanya",
-    role: "Luxury Fashion Influencer",
-    content: "From custom fittings to final delivery, the experience is nothing short of extraordinary. True luxury.",
-    image: "https://live.staticflickr.com/3741/8875025219_fa4ab2ceb4_z.jpg",
-    beforeAfter: "1M+ followers in fashion"
-  },
-  {
-    name: "Sravanthi",
-    role: "Luxury Fashion Influencer",
-    content: "From custom fittings to final delivery, the experience is nothing short of extraordinary. True luxury.",
-    image: "https://live.staticflickr.com/3741/8875025219_fa4ab2ceb4_z.jpg",
-    beforeAfter: "1M+ followers in fashion"
-  }
-];
-
 const stats = [
   { number: "2,500+", label: "Bespoke Designs", icon: Sparkles, suffix: "Created" },
   { number: "20", label: "Years of Excellence", icon: Award, suffix: "Experience" },
@@ -213,7 +196,9 @@ const HeroCarousel = () => {
       {slides.map((slide, index) => (
         <div
           key={index}
-          className={`absolute inset-0 transition-all duration-1000 ease-in-out transform ${index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
+          className={`absolute inset-0 transition-all duration-1000 ease-in-out transform ${index === currentSlide
+              ? 'opacity-100 scale-100 z-10 pointer-events-auto'
+              : 'opacity-0 scale-110 z-0 pointer-events-none'
             }`}
         >
           <img
@@ -231,9 +216,16 @@ const HeroCarousel = () => {
                   <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
                   <span className="text-white/90 text-sm font-semibold">New Collection</span>
                 </div>
-                <h1 className="text-6xl lg:text-8xl font-serif font-bold text-white leading-tight transform hover:scale-105 transition-transform duration-500">
-                  {slide.title}
-                </h1>
+                {index === 0 ? (
+                  <h1 className="text-5xl lg:text-7xl font-serif font-bold text-white leading-tight transform hover:scale-105 transition-transform duration-500">
+                    {slide.title}
+                  </h1>
+                ) : (
+                  <h1 className="text-6xl lg:text-8xl font-serif font-bold text-white leading-tight transform hover:scale-105 transition-transform duration-500">
+                    {slide.title}
+                  </h1>
+                )}
+
                 <p className="text-2xl lg:text-3xl text-amber-200 font-light mb-4 transform hover:translate-x-2 transition-transform duration-300">
                   {slide.subtitle}
                 </p>
@@ -241,7 +233,7 @@ const HeroCarousel = () => {
                   {slide.description}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 pt-6">
-                  <Link to="/products">
+                  <Link to="/products" onClick={() => window.scrollTo(0, 0)}>
                     <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-6 text-lg font-semibold shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 hover:rotate-1">
                       Explore Collection
                       <ArrowRight className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
@@ -255,7 +247,7 @@ const HeroCarousel = () => {
       ))}
 
       {/* Slide Indicators */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
         {slides.map((_, index) => (
           <button
             key={index}
@@ -267,7 +259,7 @@ const HeroCarousel = () => {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 right-8 animate-bounce">
+      <div className="absolute bottom-8 right-8 animate-bounce z-20">
         <div className="flex flex-col items-center text-white transform hover:scale-110 transition-transform duration-300">
           <span className="text-sm mb-2 font-semibold">Scroll</span>
           <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
@@ -297,7 +289,7 @@ const FeatureCard = ({ feature, index }) => {
         <p className="text-gray-600 group-hover:text-gray-700 transition-colors duration-300 mb-3">
           {feature.description}
         </p>
-        
+
         {/* Stats */}
         <div className="flex items-center mb-3">
           <div className="text-sm font-semibold text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
@@ -416,7 +408,7 @@ const Footer = () => {
                 aria-label="WhatsApp"
               >
                 <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                 </svg>
               </a>
               <a
@@ -436,7 +428,7 @@ const Footer = () => {
                 aria-label="Youtube"
               >
                 <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                  <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
                 </svg>
               </a>
             </div>
@@ -457,7 +449,24 @@ const Footer = () => {
 const Home = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const sectionRefs = useRef([]);
+  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+
+  // ✅ New State for Team
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+
+  // ✅ Fetch Team Data
+  useEffect(() => {
+    const fetchTeam = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/team`);
+        setTeamMembers(res.data);
+      } catch (error) {
+        console.error("Failed to load team members", error);
+        // Fallback or empty array handled in UI
+      }
+    };
+    fetchTeam();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -467,7 +476,7 @@ const Home = () => {
       setScrollProgress(progress);
     };
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth) * 100,
         y: (e.clientY / window.innerHeight) * 100
@@ -475,7 +484,7 @@ const Home = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove as any);
 
     // Intersection Observer for scroll animations
     const observer = new IntersectionObserver((entries) => {
@@ -499,7 +508,7 @@ const Home = () => {
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousemove', handleMouseMove as any);
       observer.disconnect();
     };
   }, []);
@@ -529,7 +538,7 @@ const Home = () => {
 
       {/* Animated Stats Section */}
       <section
-        ref={el => sectionRefs.current[0] = el}
+        ref={el => { sectionRefs.current[0] = el }}
         className="relative py-20 bg-white/40 backdrop-blur-sm border-y border-white/20 transform transition-all duration-1000"
       >
         <div className="container mx-auto px-4">
@@ -560,7 +569,7 @@ const Home = () => {
 
       {/* Premium Collections */}
       <section
-        ref={el => sectionRefs.current[1] = el}
+        ref={el => { sectionRefs.current[1] = el }}
         className="relative py-24 overflow-hidden"
       >
         <div className="container mx-auto px-4">
@@ -617,7 +626,8 @@ const Home = () => {
 
                 <div className="p-6">
                   <div className="flex items-center justify-between">
-                    <Link to="/products">
+                    {/* UPDATED: Added scrollTo(0,0) */}
+                    <Link to="/products" onClick={() => window.scrollTo(0, 0)}>
                       <Button className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white shadow-lg transform group-hover:scale-105 group-hover:rotate-1 transition-all duration-300">
                         View Our Collection
                         <ArrowRight className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
@@ -636,7 +646,7 @@ const Home = () => {
 
       {/* Enhanced Features with Images */}
       <section
-        ref={el => sectionRefs.current[3] = el}
+        ref={el => { sectionRefs.current[3] = el }}
         className="relative py-24 bg-gradient-to-br from-purple-50/50 to-pink-50/50"
       >
         <div className="container mx-auto px-4">
@@ -720,9 +730,9 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Enhanced Testimonials - Updated for 4 cards in a row */}
+      {/* Enhanced Team / Testimonials Section - NOW DYNAMIC */}
       <section
-        ref={el => sectionRefs.current[4] = el}
+        ref={el => { sectionRefs.current[4] = el }}
         className="relative py-24 bg-white/80 backdrop-blur-sm"
       >
         <div className="container mx-auto px-4">
@@ -736,47 +746,54 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className="group relative bg-gradient-to-br from-white to-gray-50/50 rounded-3xl p-6 shadow-soft hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:rotate-1 border border-white/20"
-                style={{ transitionDelay: `${index * 200}ms` }}
-              >
-                <div className="flex flex-col items-center text-center mb-6">
-                  <img
-                    src={testimonial.image}
-                    alt={testimonial.name}
-                    className="w-20 h-20 rounded-full object-cover border-2 border-amber-400 shadow-lg transform group-hover:scale-110 transition-transform duration-300 mb-4"
-                  />
-                  <div className="transform group-hover:translate-y-1 transition-transform duration-300">
-                    <div className="font-bold text-lg text-gray-800 group-hover:text-gray-900 transition-colors duration-300">
-                      {testimonial.name}
-                    </div>
-                    <div className="text-gray-600 text-sm font-semibold group-hover:text-gray-700 transition-colors duration-300">
-                      {testimonial.role}
+            {teamMembers.length > 0 ? (
+              teamMembers.map((member, index) => (
+                <div
+                  key={member._id}
+                  className="group relative bg-gradient-to-br from-white to-gray-50/50 rounded-3xl p-6 shadow-soft hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:rotate-1 border border-white/20"
+                  style={{ transitionDelay: `${index * 200}ms` }}
+                >
+                  <div className="flex flex-col items-center text-center mb-6">
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-20 h-20 rounded-full object-cover border-2 border-amber-400 shadow-lg transform group-hover:scale-110 transition-transform duration-300 mb-4"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/150"; }}
+                    />
+                    <div className="transform group-hover:translate-y-1 transition-transform duration-300">
+                      <div className="font-bold text-lg text-gray-800 group-hover:text-gray-900 transition-colors duration-300">
+                        {member.name}
+                      </div>
+                      <div className="text-gray-600 text-sm font-semibold group-hover:text-gray-700 transition-colors duration-300">
+                        {member.address}
+                      </div>
                     </div>
                   </div>
+
+                  <p className="text-gray-700 text-sm leading-relaxed mb-4 italic text-center transform group-hover:translate-y-1 transition-transform duration-300 line-clamp-4">
+                    "{member.content}"
+                  </p>
+
+                  <div className="text-xs text-amber-600 font-medium text-center pt-4 border-t border-gray-200 transform group-hover:translate-y-1 transition-transform duration-300">
+                    {member.description}
+                  </div>
+
+                  {/* Hover shine effect */}
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                 </div>
-
-                <p className="text-gray-700 text-sm leading-relaxed mb-4 italic text-center transform group-hover:translate-y-1 transition-transform duration-300">
-                  "{testimonial.content}"
-                </p>
-
-                <div className="text-xs text-amber-600 font-medium text-center pt-4 border-t border-gray-200 transform group-hover:translate-y-1 transition-transform duration-300">
-                  {testimonial.beforeAfter}
-                </div>
-
-                {/* Hover shine effect */}
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+              ))
+            ) : (
+              <div className="col-span-full text-center text-gray-500 py-10">
+                <p>Loading creative team...</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
 
       {/* Ultimate CTA Section */}
       <section
-        ref={el => sectionRefs.current[5] = el}
+        ref={el => { sectionRefs.current[5] = el }}
         className="relative py-28 bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900 overflow-hidden"
       >
         {/* Animated background elements */}
@@ -805,7 +822,8 @@ const Home = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12">
-            <Link to="/contact">
+            {/* UPDATED: Added scrollTo(0,0) */}
+            <Link to="/contact" onClick={() => window.scrollTo(0, 0)}>
               <Button size="lg" className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white shadow-2xl transform hover:scale-105 hover:rotate-1 transition-all duration-300 font-bold text-lg px-8 py-6">
                 <Sparkles className="w-5 h-5 mr-3 transform group-hover:scale-110 transition-transform duration-300" />
                 Book Private Consultation

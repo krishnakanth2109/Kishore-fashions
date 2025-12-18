@@ -355,10 +355,11 @@ const Products = () => {
                   className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col"
                 >
                   <div className="relative overflow-hidden">
+                    {/* UPDATED IMAGE STYLING HERE */}
                     <img
                       src={product.image}
                       alt={product.title}
-                      className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="w-full h-96 object-contain bg-gray-50 transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
                   </div>

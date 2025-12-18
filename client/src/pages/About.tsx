@@ -1,53 +1,70 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Target, Eye, Heart, Users, Award, Sparkles, Quote, Scissors, Zap } from "lucide-react";
+import { Target, Eye, Heart, Award, Sparkles, Quote, Scissors } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 import "./About.css";
 
-// A custom SVG icon for a needle, as it's not in Lucide
-const NeedleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M19.07,4.93l-1.41,1.41" />
-    <path d="M16.24,7.76l-1.41,1.41" />
-    <path d="M5,12a1,1,0,0,0,1,1h.01" />
-    <path d="M4.93,19.07l1.41-1.41" />
-    <path d="M7.76,16.24l1.41-1.41" />
-    <path d="M12,5a1,1,0,0,0-1-1H11" />
-    <path d="M12,19a1,1,0,0,0,1,1h.01" />
-    <path d="M19.07,19.07l-1.41-1.41" />
-  </svg>
-);
+// ✅ Get API URL from .env (Matches Admin Logic)
+const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
+// Interface for dynamic data
+interface SuccessStory {
+  image: string;
+  heading: string;
+  paragraph: string;
+}
 
 const About = () => {
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [activeImage, setActiveImage] = useState(0);
+  
+  // --- DYNAMIC STATE ---
+  const [founderImage, setFounderImage] = useState("https://image2url.com/images/1761557853213-99509f6b-ecb4-49a2-a17a-eb17fb833d80.jpg");
+  const [stories, setStories] = useState<SuccessStory[]>([]);
+  // ---------------------
 
   // Curated, high-quality images for the training environment
   const trainingImages = [
     "http://3.bp.blogspot.com/-tWiLIo7X5rM/UcI2MQNZh7I/AAAAAAAAC5c/3UV0YYmGDYw/s1600/1019-14.jpg",
     "https://kaurboutique.com/wp-content/uploads/2022/04/ulteration.png",
-  "https://generisonline.com/wp-content/uploads/2022/06/best-womens-boutiques-in-charlotte.jpg",
-   "https://enjoycouture.com/wp-content/uploads/2021/05/vignette-couture-entreprenariat-article-de-blog.jpg"
-];
-
-  const studentWorkImages = [
-   "https://image2url.com/images/1761719016521-dd168043-feb5-453c-ac08-9a80eec4f599.png",
-    "https://image2url.com/images/1761717329001-843cfb08-c9dc-4666-ada7-cd49574b5f93.png",
-    "https://image2url.com/images/1761716548985-457dd931-16ce-433e-ab17-91141b091a94.png",
-    "https://image2url.com/images/1761716048193-95b72be6-6b19-4c43-a3a7-a8421cc802d9.png"
+    "https://generisonline.com/wp-content/uploads/2022/06/best-womens-boutiques-in-charlotte.jpg",
+    "https://enjoycouture.com/wp-content/uploads/2021/05/vignette-couture-entreprenariat-article-de-blog.jpg"
   ];
 
-
+  // Fetch Dynamic Data
+  useEffect(() => {
+    const fetchAboutData = async () => {
+      try {
+        // ✅ Updated to use dynamic API_URL
+        const res = await axios.get(`${API_URL}/api/about`);
+        if (res.data) {
+          if (res.data.founderImage) setFounderImage(res.data.founderImage);
+          if (res.data.successStories && res.data.successStories.length > 0) {
+            setStories(res.data.successStories);
+          } else {
+            // Fallback if no stories in DB yet
+            setStories([
+              { 
+                image: "https://image2url.com/images/1761719016521-dd168043-feb5-453c-ac08-9a80eec4f599.png", 
+                heading: "Boutique Collection", 
+                paragraph: "By an Elegant Stitches Graduate" 
+              },
+              { 
+                image: "https://image2url.com/images/1761717329001-843cfb08-c9dc-4666-ada7-cd49574b5f93.png", 
+                heading: "Boutique Collection", 
+                paragraph: "By an Elegant Stitches Graduate" 
+              }
+            ]);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load about data", error);
+      }
+    };
+    fetchAboutData();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -103,9 +120,7 @@ const About = () => {
       </div>
 
       <Navbar />
-      <br />
-      <br />
-      <br />
+      <br /><br /><br />
       
       <div className="container mx-auto px-4 py-16 relative z-10">
         {/* Header */}
@@ -147,15 +162,12 @@ const About = () => {
                   <div className="space-y-6 text-lg">
                     <p className="text-gray-700 leading-relaxed bg-white/60 p-6 rounded-2xl border-l-4 border-pink-400 hover:border-l-8 transition-all duration-500 hover:scale-105 transform hover:shadow-lg animate-paragraph opacity-0 translate-x-4 blur-sm transition-all duration-700">
                       <strong className="text-pink-500 text-xl bg-gradient-to-r from-pink-100 to-pink-50 px-2 py-1 rounded">Kishor Kumar</strong>, Founder & Creative Head of Kishor Fashions
-  Every great brand begins with a vision — and for Kishor Fashions, that vision belongs to Mr. Kishor, a passionate designer and mentor who turned his love for fashion into a lifelong mission to empower others.
-
-
+                      Every great brand begins with a vision — and for Kishor Fashions, that vision belongs to Mr. Kishor, a passionate designer and mentor who turned his love for fashion into a lifelong mission to empower others.
                     </p>
                     <div className="bg-gradient-to-r from-pink-50 to-rose-50 p-6 rounded-2xl border border-pink-200 animate-paragraph opacity-0 translate-x-4 blur-sm transition-all duration-700 delay-300">
                       <Quote className="w-8 h-8 text-pink-400 mb-4" />
                       <p className="text-gray-600 italic text-lg leading-relaxed">
-                        "
-With years of experience in tailoring, boutique design, and fashion training, Kishor has guided hundreds of students to build confidence, creativity, and successful careers in the world of fashion."
+                        "With years of experience in tailoring, boutique design, and fashion training, Kishor has guided hundreds of students to build confidence, creativity, and successful careers in the world of fashion."
                       </p>
                       <div className="flex items-center space-x-4 pt-4 mt-4 border-t border-pink-200">
                         <Award className="w-6 h-6 text-rose-500" />
@@ -168,8 +180,9 @@ With years of experience in tailoring, boutique design, and fashion training, Ki
                   <div className="relative group">
                     <div className="absolute -inset-6 bg-gradient-to-r from-pink-300 via-rose-400 to-pink-500 rounded-3xl blur-2xl opacity-50 group-hover:opacity-70 transition duration-1000 animate-pulse"></div>
                     <div className="relative">
+                      {/* DYNAMIC FOUNDER IMAGE */}
                       <img 
-                        src="https://image2url.com/images/1761557853213-99509f6b-ecb4-49a2-a17a-eb17fb833d80.jpg" 
+                        src={founderImage} 
                         alt="Kishore Kumar - Founder of Elegant Stitches"
                         className="w-96 h-96 rounded-2xl object-cover shadow-2xl border-4 border-white transform group-hover:scale-105 group-hover:rotate-2 transition-all duration-500"
                         onError={(e) => {
@@ -198,13 +211,11 @@ With years of experience in tailoring, boutique design, and fashion training, Ki
               Teaching Philosophy
             </h2>
             <p className="text-xl text-gray-600 max-w-4xl mx-auto">
-              Kishor believes that true learning doesn’t come from books alone —    it comes from Practice, Patience, and Persistence.
+              Kishor believes that true learning doesn’t come from books alone — it comes from Practice, Patience, and Persistence.
             </p>
-
             <p className="text-xl text-gray-600 max-w-4xl mx-auto">
               Every student at Kishor Fashions is taught with care, personal attention, and the assurance that “if you follow the rules, success will follow you.”
             </p>
-
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="relative h-96">
@@ -229,25 +240,21 @@ With years of experience in tailoring, boutique design, and fashion training, Ki
                 <p className="text-gray-600 leading-relaxed p-4 bg-white/70 rounded-xl border-l-4 border-rose-400 hover:border-l-8 transition-all duration-300 animate-paragraph opacity-0 translate-x-4 blur-sm">
                   <span className="text-rose-500 font-semibold bg-rose-50 px-1 rounded">Practical stitching training</span> 
                 </p>
-
                 <p className="text-gray-600 leading-relaxed p-4 bg-white/70 rounded-xl border-l-4 border-rose-400 hover:border-l-8 transition-all duration-300 animate-paragraph opacity-0 translate-x-4 blur-sm">
-                  <span className="text-rose-500 font-semibold bg-rose-50 px-1 rounded">Creative design learning
-</span> 
+                  <span className="text-rose-500 font-semibold bg-rose-50 px-1 rounded">Creative design learning</span> 
                 </p>
                 <p className="text-gray-600 leading-relaxed p-4 bg-white/70 rounded-xl border-l-4 border-rose-400 hover:border-l-8 transition-all duration-300 animate-paragraph opacity-0 translate-x-4 blur-sm">
-                  <span className="text-rose-500 font-semibold bg-rose-50 px-1 rounded">Home-based video lessons
-</span> 
+                  <span className="text-rose-500 font-semibold bg-rose-50 px-1 rounded">Home-based video lessons</span> 
                 </p>
                 <p className="text-gray-600 leading-relaxed p-4 bg-white/70 rounded-xl border-l-4 border-rose-400 hover:border-l-8 transition-all duration-300 animate-paragraph opacity-0 translate-x-4 blur-sm">
                   <span className="text-rose-500 font-semibold bg-rose-50 px-1 rounded">Personal doubt-clearing sessions (100% clarity guaranteed)</span> 
                 </p>
-               
               </div>
             </div>
           </div>
         </section>
 
-        {/* Student Work Showcase */}
+        {/* Student Work Showcase - DYNAMIC SUCCESS STORIES */}
         <section 
           ref={addToRefs}
           className="mb-24 opacity-0 translate-y-8 transition-all duration-1000 delay-400 ease-out"
@@ -263,18 +270,25 @@ With years of experience in tailoring, boutique design, and fashion training, Ki
                 </p>
               </div>
               
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {studentWorkImages.map((src, index) => (
-                  <div key={index} className="relative group overflow-hidden rounded-2xl transform hover:scale-105 transition-all duration-500 shadow-lg">
-                    <img 
-                      src={src}
-                      alt={`Student work ${index + 1}`}
-                      className="w-full h-56 object-cover transform group-hover:scale-110 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end p-4">
-                      <div className="text-white">
-                        <div className="font-semibold">Boutique Collection</div>
-                        <div className="text-sm text-pink-200">By an Elegant Stitches Graduate</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {stories.map((story, index) => (
+                  <div key={index} className="relative group overflow-hidden rounded-2xl transform hover:scale-105 transition-all duration-500 shadow-lg bg-white">
+                    {/* Story Image */}
+                    <div className="w-full h-64 overflow-hidden">
+                      <img 
+                        src={story.image}
+                        alt={`Student work ${index + 1}`}
+                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                        onError={(e) => {
+                           e.currentTarget.src = "https://via.placeholder.com/400x400?text=No+Image";
+                        }}
+                      />
+                    </div>
+                    {/* Story Content Overlay/Bottom */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-4 text-left">
+                      <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        <div className="font-bold text-white text-lg mb-1">{story.heading}</div>
+                        <p className="text-sm text-pink-200 line-clamp-3">{story.paragraph}</p>
                       </div>
                     </div>
                   </div>
@@ -305,9 +319,9 @@ With years of experience in tailoring, boutique design, and fashion training, Ki
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { icon: Target, title: "Commitment to Excellence", description: " We believe in doing every task with perfection — whether it’s stitching a garment, designing a pattern, or guiding a student.Every class, every project, and every student matters.", color: "from-pink-400 to-rose-400", bgColor: "bg-gradient-to-br from-pink-50 to-rose-50" },
-              { icon: Eye, title: "Creativity with Purpose", description: "Fashion is not just about beauty — it’s about expression.We encourage our students to bring their imagination to life and create designs that reflect personality, culture,and innovation.", color: "from-rose-400 to-pink-400", bgColor: "bg-gradient-to-br from-rose-50 to-pink-50" },
-              { icon: Heart, title: "Learn with Discipline", description: "At Kishor Fashions, we value discipline as the key to success.Regular practice, timely homework, and dedication to improvement help every learner build both skill and confidence.", color: "from-pink-500 to-rose-500", bgColor: "bg-gradient-to-br from-pink-100 to-rose-100" }
+              { icon: Target, title: "Commitment to Excellence", description: " We believe in doing every task with perfection — whether it’s stitching a garment, designing a pattern, or guiding a student. Every class, every project, and every student matters.", color: "from-pink-400 to-rose-400", bgColor: "bg-gradient-to-br from-pink-50 to-rose-50" },
+              { icon: Eye, title: "Creativity with Purpose", description: "Fashion is not just about beauty — it’s about expression. We encourage our students to bring their imagination to life and create designs that reflect personality, culture, and innovation.", color: "from-rose-400 to-pink-400", bgColor: "bg-gradient-to-br from-rose-50 to-pink-50" },
+              { icon: Heart, title: "Learn with Discipline", description: "At Kishor Fashions, we value discipline as the key to success. Regular practice, timely homework, and dedication to improvement help every learner build both skill and confidence.", color: "from-pink-500 to-rose-500", bgColor: "bg-gradient-to-br from-pink-100 to-rose-100" }
             ].map((value, index) => (
               <Card key={index} className={`border-0 shadow-2xl ${value.bgColor} hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15)] transform hover:-translate-y-4 transition-all duration-500 group overflow-hidden`}>
                 <CardContent className="p-8 relative">

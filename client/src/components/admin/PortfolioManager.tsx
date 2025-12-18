@@ -9,10 +9,10 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { PlusCircle, Trash2, Edit, PackageX, Loader2 } from "lucide-react";
+import { PlusCircle, Trash2, Edit, PackageX, Loader2, CheckCircle, Upload, Image as ImageIcon, AlertCircle, X } from "lucide-react";
 import { AdminForm } from "./AdminForm";
 import { PortfolioImage, CurrentFormState, FormDataType } from "@/types";
-import { ChangeEvent, FormEvent, useState, useEffect } from "react";
+import { ChangeEvent, FormEvent, useState, useEffect, useRef } from "react";
 
 // Define the base URL for your API from environment variables
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
@@ -37,6 +37,11 @@ export const PortfolioManager = (props: PortfolioManagerProps) => {
   const [currentForm, setCurrentForm] = useState<CurrentFormState>({ type: null, data: {}, isEditing: false });
   const [isLoading, setIsLoading] = useState(true); // For initial fetch and delete operations
   const [isSubmitting, setIsSubmitting] = useState(false); // For form submission (create/update)
+  const [hasImageAttached, setHasImageAttached] = useState(false); // Track if image is attached
+  const [selectedFileName, setSelectedFileName] = useState<string>(""); // Track selected file name
+  const [imageError, setImageError] = useState<string>(""); // Validation error for image
+  const [imagePreview, setImagePreview] = useState<string | null>(null); // For image preview
+  const fileInputRef = useRef<HTMLInputElement>(null); // Ref for file input
 
   // --- DATA FETCHING ---
   useEffect(() => {
@@ -67,17 +72,62 @@ export const PortfolioManager = (props: PortfolioManagerProps) => {
 
   // --- HANDLER FUNCTIONS ---
   const openForm = (type: string, data: FormDataType = {}, isEditing = false) => {
+    // Check if we're editing and the portfolio image has an existing image
+    const hasExistingImage = isEditing && data.src;
+    setHasImageAttached(!!hasExistingImage);
+    setImageError(""); // Clear any previous errors
+    setImagePreview(null); // Clear preview
+    
+    if (hasExistingImage && typeof data.src === 'string') {
+      setSelectedFileName(data.src.split('/').pop() || "Existing image");
+      setImagePreview(getPortfolioImageUrl(data.src)); // Set preview for existing image
+    } else {
+      setSelectedFileName("");
+    }
     setCurrentForm({ type, data, isEditing });
   };
 
   const handleCancelForm = () => {
     setCurrentForm({ type: null, data: {}, isEditing: false });
+    setHasImageAttached(false);
+    setSelectedFileName("");
+    setImageError("");
+    setImagePreview(null);
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       setCurrentForm(prev => ({ ...prev, data: { ...prev.data, image: file } }));
+      setHasImageAttached(true);
+      setSelectedFileName(file.name);
+      setImageError(""); // Clear error when file is selected
+      
+      // Create preview URL for the selected file
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setHasImageAttached(false);
+      setSelectedFileName("");
+      setImagePreview(null);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setHasImageAttached(false);
+    setSelectedFileName("");
+    setImagePreview(null);
+    setCurrentForm(prev => ({ ...prev, data: { ...prev.data, image: undefined } }));
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -100,12 +150,22 @@ export const PortfolioManager = (props: PortfolioManagerProps) => {
 
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     
+    // Validate image field
+    if (!currentForm.isEditing && !hasImageAttached) {
+      setImageError("Portfolio image is required");
+      return;
+    }
+    
+    setIsSubmitting(true);
+    setImageError(""); // Clear any previous errors
+
     const { data, isEditing } = currentForm;
     const formData = new FormData();
     Object.keys(data).forEach(key => {
-      formData.append(key, data[key]);
+      if (data[key] !== undefined) {
+        formData.append(key, data[key]);
+      }
     });
 
     const url = isEditing
@@ -130,12 +190,11 @@ export const PortfolioManager = (props: PortfolioManagerProps) => {
       setIsSubmitting(false);
     }
   };
-  
+
   // --- FORM FIELDS DEFINITION ---
   const portfolioImageFields = [
     { name: 'title', label: 'Image Title', placeholder: 'Enter image title' },
     { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Enter image description' },
-    { name: 'image', label: 'Upload Image', type: 'file', placeholder: '' },
   ];
 
   // --- RENDER LOGIC ---
@@ -204,7 +263,7 @@ export const PortfolioManager = (props: PortfolioManagerProps) => {
       </div>
 
       <Dialog open={currentForm.type === 'portfolio/images'} onOpenChange={(isOpen) => !isOpen && handleCancelForm()}>
-        <DialogContent className="sm:max-w-[650px]">
+        <DialogContent className="sm:max-w-[650px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center">
               {currentForm.isEditing ? 'Edit Portfolio Image' : 'Add New Portfolio Image'}
@@ -215,16 +274,171 @@ export const PortfolioManager = (props: PortfolioManagerProps) => {
               {isSubmitting && <span className="block mt-1 text-purple-600 font-medium">Submitting...</span>}
             </DialogDescription>
           </DialogHeader>
-          <AdminForm
-            fields={portfolioImageFields}
-            formData={currentForm.data}
-            setFormData={(d) => setCurrentForm(prev => ({ ...prev, data: d }))}
-            onFileChange={handleFileChange}
-            onSubmit={handleFormSubmit}
-            onCancel={handleCancelForm}
-            isEditing={currentForm.isEditing}
-            isLoading={isSubmitting}
-          />
+          
+          <form onSubmit={handleFormSubmit} className="space-y-6">
+            {/* Title Field */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Image Title</label>
+              <input
+                type="text"
+                value={currentForm.data.title || ""}
+                onChange={(e) => setCurrentForm(prev => ({ 
+                  ...prev, 
+                  data: { ...prev.data, title: e.target.value } 
+                }))}
+                placeholder="Enter image title"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            {/* Description Field */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Description</label>
+              <textarea
+                value={currentForm.data.description || ""}
+                onChange={(e) => setCurrentForm(prev => ({ 
+                  ...prev, 
+                  data: { ...prev.data, description: e.target.value } 
+                }))}
+                placeholder="Enter image description"
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            {/* Image Field */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium">Upload Image *</label>
+                {hasImageAttached && (
+                  <div className="flex items-center gap-1 text-sm font-medium text-green-600">
+                    <CheckCircle className="w-4 h-4" />
+                    <span>Image attached</span>
+                  </div>
+                )}
+              </div>
+              
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-purple-500 transition-colors">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  id="portfolio-image-upload"
+                  ref={fileInputRef}
+                />
+                <label
+                  htmlFor="portfolio-image-upload"
+                  className="cursor-pointer flex flex-col items-center justify-center space-y-2"
+                >
+                  {hasImageAttached ? (
+                    <>
+                      <ImageIcon className="w-8 h-8 text-green-500" />
+                      <div className="text-center">
+                        <p className="text-sm font-medium text-gray-700">
+                          ✓ {selectedFileName}
+                        </p>
+                        <p className="text-xs text-gray-500">Click to change image</p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-8 h-8 text-gray-400" />
+                      <div className="text-center">
+                        <p className="text-sm font-medium text-gray-700">
+                          Click to upload portfolio image
+                        </p>
+                        <p className="text-xs text-gray-500">PNG, JPG, JPEG up to 10MB</p>
+                      </div>
+                    </>
+                  )}
+                </label>
+              </div>
+
+              {/* Show image preview at bottom */}
+              {imagePreview && (
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-medium text-gray-700">Image Preview:</p>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleRemoveImage}
+                      className="h-6 w-6 p-0 hover:bg-red-50 hover:text-red-600"
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="max-h-32 max-w-full rounded-md object-contain border border-gray-300"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2 text-center truncate">
+                    {selectedFileName}
+                  </p>
+                </div>
+              )}
+
+              {/* Show existing image URL when editing */}
+              {currentForm.isEditing && currentForm.data.src && typeof currentForm.data.src === 'string' && !hasImageAttached && !imagePreview && (
+                <div className="mt-2 p-3 bg-purple-50 rounded border border-purple-200">
+                  <div className="flex items-center gap-2 mb-1">
+                    <ImageIcon className="w-4 h-4 text-purple-600" />
+                    <p className="text-sm font-medium text-purple-800">Current image:</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <img 
+                      src={getPortfolioImageUrl(currentForm.data.src)} 
+                      alt="Current portfolio" 
+                      className="w-10 h-10 object-cover rounded border"
+                    />
+                    <p className="text-xs text-gray-600 truncate">{currentForm.data.src}</p>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">Upload a new image to replace the current one</p>
+                </div>
+              )}
+
+              {/* Image validation error */}
+              {imageError && (
+                <div className="flex items-center gap-2 text-red-600 text-sm mt-2">
+                  <AlertCircle className="w-4 h-4" />
+                  <span>{imageError}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Form Actions */}
+            <div className="flex justify-end gap-3 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleCancelForm}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-purple-600 hover:bg-purple-700"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    {currentForm.isEditing ? 'Updating...' : 'Creating...'}
+                  </>
+                ) : (
+                  <>
+                    {currentForm.isEditing ? 'Update Image' : 'Add Image'}
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
         </DialogContent>
       </Dialog>
       

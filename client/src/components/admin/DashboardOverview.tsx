@@ -1,8 +1,6 @@
-// src/components/admin/DashboardOverview.tsx
-
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Package, Image, Video, Contact, TrendingUp, Eye } from "lucide-react";
+import { Package, Image, Video, Contact, TrendingUp } from "lucide-react";
 import { Product, PortfolioImage, PortfolioVideo } from "@/types";
 
 interface DashboardOverviewProps {
@@ -12,20 +10,22 @@ interface DashboardOverviewProps {
   setActiveTab: (tab: string) => void;
 }
 
-export const DashboardOverview = ({ products, portfolioImages, videos, setActiveTab }: DashboardOverviewProps) => (
+export const DashboardOverview = ({ 
+  products = [], 
+  portfolioImages = [], 
+  videos = [], 
+  setActiveTab 
+}: DashboardOverviewProps) => (
   <Card className="border-0 shadow-xl bg-gradient-to-br from-gray-50 to-white/70 backdrop-blur-sm">
     <CardHeader className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-t-lg">
       <div className="flex items-center justify-between">
         <CardTitle className="text-2xl font-bold text-white">Dashboard Overview</CardTitle>
-        <div className="flex items-center space-x-2 text-white/90">
-      
-         
-        </div>
       </div>
     </CardHeader>
     <CardContent className="p-6">
       {/* Stats Grid with Enhanced Design */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* Products Stat */}
         <div className="relative bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <div className="flex items-center justify-between">
             <div>
@@ -33,7 +33,7 @@ export const DashboardOverview = ({ products, portfolioImages, videos, setActive
               <p className="text-3xl font-bold text-gray-800">{products.length}</p>
               <div className="flex items-center mt-2 text-green-500 text-xs">
                 <TrendingUp className="w-3 h-3 mr-1" />
-                <span>+12% growth</span>
+                <span>Active Inventory</span>
               </div>
             </div>
             <div className="p-3 bg-blue-500/10 rounded-xl">
@@ -43,6 +43,7 @@ export const DashboardOverview = ({ products, portfolioImages, videos, setActive
           <div className="absolute top-0 right-0 w-16 h-16 bg-blue-500/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
         </div>
 
+        {/* Portfolio Stat */}
         <div className="relative bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <div className="flex items-center justify-between">
             <div>
@@ -50,7 +51,7 @@ export const DashboardOverview = ({ products, portfolioImages, videos, setActive
               <p className="text-3xl font-bold text-gray-800">{portfolioImages.length}</p>
               <div className="flex items-center mt-2 text-green-500 text-xs">
                 <TrendingUp className="w-3 h-3 mr-1" />
-                <span>+8% growth</span>
+                <span>Gallery Items</span>
               </div>
             </div>
             <div className="p-3 bg-green-500/10 rounded-xl">
@@ -60,6 +61,7 @@ export const DashboardOverview = ({ products, portfolioImages, videos, setActive
           <div className="absolute top-0 right-0 w-16 h-16 bg-green-500/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
         </div>
 
+        {/* Videos Stat */}
         <div className="relative bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <div className="flex items-center justify-between">
             <div>
@@ -67,7 +69,7 @@ export const DashboardOverview = ({ products, portfolioImages, videos, setActive
               <p className="text-3xl font-bold text-gray-800">{videos.length}</p>
               <div className="flex items-center mt-2 text-purple-500 text-xs">
                 <TrendingUp className="w-3 h-3 mr-1" />
-                <span>+15% growth</span>
+                <span>Media Content</span>
               </div>
             </div>
             <div className="p-3 bg-purple-500/10 rounded-xl">
