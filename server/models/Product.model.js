@@ -13,10 +13,14 @@ const productSchema = new mongoose.Schema({
     type: Number, 
     required: [true, "Price is required"] 
   },
-  image: { 
+  mainImage: { 
     type: String, 
-    required: [true, "Image URL is required"] 
+    required: [true, "Main image URL is required"] 
   },
+  additionalImages: {
+    type: [String],
+    default: []
+  }
 });
 
 const Product = mongoose.model("Product", productSchema);

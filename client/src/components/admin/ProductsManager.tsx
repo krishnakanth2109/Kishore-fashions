@@ -10,7 +10,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { PlusCircle, Trash2, Edit, PackageX, Loader2, CheckCircle, Upload, Image as ImageIcon, AlertCircle, X } from "lucide-react";
-import { AdminForm } from "./AdminForm";
 import { Product, CurrentFormState, FormDataType } from "@/types";
 import { ChangeEvent, FormEvent, useState, useEffect, useRef } from "react";
 
@@ -23,7 +22,8 @@ interface ProductsManagerProps {
   title: string;
   description: string;
   price: number;
-  image: string;
+  mainImage: string;
+  additionalImages: string[];
  }
 
 // A simple skeleton card for loading feedback
@@ -45,11 +45,17 @@ export const ProductsManager = (props: Product[]) => {
   const [currentForm, setCurrentForm] = useState<CurrentFormState>({ type: null, data: {}, isEditing: false });
   const [isLoading, setIsLoading] = useState(true); // Manages loading for fetch/delete
   const [isSubmitting, setIsSubmitting] = useState(false); // Manages loading for form submission
-  const [hasImageAttached, setHasImageAttached] = useState(false); // Track if image is attached
-  const [selectedFileName, setSelectedFileName] = useState<string>(""); // Track selected file name
+  
+  // State for multiple images
+  const [mainImage, setMainImage] = useState<File | null>(null);
+  const [mainImagePreview, setMainImagePreview] = useState<string | null>(null);
+  const [additionalImages, setAdditionalImages] = useState<File[]>([]);
+  const [additionalImagesPreviews, setAdditionalImagesPreviews] = useState<string[]>([]);
+  const [existingAdditionalImages, setExistingAdditionalImages] = useState<string[]>([]);
+  
   const [imageError, setImageError] = useState<string>(""); // Validation error for image
-  const [imagePreview, setImagePreview] = useState<string | null>(null); // For image preview
-  const fileInputRef = useRef<HTMLInputElement>(null); // Ref for file input
+  const mainFileInputRef = useRef<HTMLInputElement>(null);
+  const additionalFileInputRef = useRef<HTMLInputElement>(null);
 
   // --- DATA FETCHING ---
   useEffect(() => {
@@ -71,63 +77,96 @@ export const ProductsManager = (props: Product[]) => {
 
   // --- HANDLER FUNCTIONS ---
   const openForm = (type: string, data: FormDataType = {}, isEditing = false) => {
-    // Check if we're editing and the product has an existing image
-    const hasExistingImage = isEditing && data.image;
-    setHasImageAttached(!!hasExistingImage);
-    setImageError(""); // Clear any previous errors
-    setImagePreview(null); // Clear preview
+    // Reset all image states
+    setMainImage(null);
+    setMainImagePreview(null);
+    setAdditionalImages([]);
+    setAdditionalImagesPreviews([]);
+    setExistingAdditionalImages([]);
+    setImageError("");
     
-    if (hasExistingImage && typeof data.image === 'string') {
-      setSelectedFileName(data.image.split('/').pop() || "Existing image");
-      setImagePreview(data.image); // Set preview for existing image
-    } else {
-      setSelectedFileName("");
+    if (isEditing && data) {
+      // Set main image preview if exists
+      if (data.mainImage) {
+        setMainImagePreview(data.mainImage);
+      }
+      
+      // Set existing additional images
+      if (data.additionalImages && Array.isArray(data.additionalImages)) {
+        setExistingAdditionalImages(data.additionalImages);
+      }
     }
+    
     setCurrentForm({ type, data, isEditing });
   };
 
   const handleCancelForm = () => {
     setCurrentForm({ type: null, data: {}, isEditing: false });
-    setHasImageAttached(false);
-    setSelectedFileName("");
+    setMainImage(null);
+    setMainImagePreview(null);
+    setAdditionalImages([]);
+    setAdditionalImagesPreviews([]);
+    setExistingAdditionalImages([]);
     setImageError("");
-    setImagePreview(null);
-    // Reset file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+    
+    // Reset file inputs
+    if (mainFileInputRef.current) mainFileInputRef.current.value = "";
+    if (additionalFileInputRef.current) additionalFileInputRef.current.value = "";
   };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleMainImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
-      setCurrentForm(prev => ({ ...prev, data: { ...prev.data, image: file } }));
-      setHasImageAttached(true);
-      setSelectedFileName(file.name);
-      setImageError(""); // Clear error when file is selected
+      setMainImage(file);
+      setImageError("");
       
-      // Create preview URL for the selected file
+      // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+        setMainImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
-    } else {
-      setHasImageAttached(false);
-      setSelectedFileName("");
-      setImagePreview(null);
     }
   };
 
-  const handleRemoveImage = () => {
-    setHasImageAttached(false);
-    setSelectedFileName("");
-    setImagePreview(null);
-    setCurrentForm(prev => ({ ...prev, data: { ...prev.data, image: undefined } }));
-    // Reset file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+  const handleAdditionalImagesChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const newFiles = Array.from(files);
+      const totalImages = additionalImages.length + newFiles.length + existingAdditionalImages.length;
+      
+      if (totalImages > 6) {
+        setImageError("Maximum 6 additional images allowed");
+        return;
+      }
+      
+      setAdditionalImages(prev => [...prev, ...newFiles]);
+      setImageError("");
+      
+      // Create previews for new files
+      newFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setAdditionalImagesPreviews(prev => [...prev, reader.result as string]);
+        };
+        reader.readAsDataURL(file);
+      });
     }
+  };
+
+  const handleRemoveMainImage = () => {
+    setMainImage(null);
+    setMainImagePreview(null);
+    if (mainFileInputRef.current) mainFileInputRef.current.value = "";
+  };
+
+  const handleRemoveAdditionalImage = (index: number) => {
+    setAdditionalImages(prev => prev.filter((_, i) => i !== index));
+    setAdditionalImagesPreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleRemoveExistingAdditionalImage = (index: number) => {
+    setExistingAdditionalImages(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleDelete = async (type: string, id: string) => {
@@ -150,22 +189,40 @@ export const ProductsManager = (props: Product[]) => {
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
-    // Validate image field
-    if (!currentForm.isEditing && !hasImageAttached) {
-      setImageError("Product image is required");
+    // Validate main image
+    if (!currentForm.isEditing && !mainImage) {
+      setImageError("Main product image is required");
       return;
     }
     
     setIsSubmitting(true);
-    setImageError(""); // Clear any previous errors
+    setImageError("");
 
     const { data, isEditing } = currentForm;
     const formData = new FormData();
+    
+    // Append text fields
     Object.keys(data).forEach(key => {
-      if (data[key] !== undefined) {
+      if (data[key] !== undefined && key !== 'mainImage' && key !== 'additionalImages') {
         formData.append(key, data[key]);
       }
     });
+    
+    // Append images
+    if (mainImage) {
+      formData.append('images', mainImage);
+    }
+    
+    // Append additional images
+    additionalImages.forEach(image => {
+      formData.append('images', image);
+    });
+    
+    // If editing and no new main image but we have existing additional images,
+    // we need to handle this differently on the backend
+    if (isEditing && !mainImage && mainImagePreview) {
+      formData.append('existingMainImage', mainImagePreview);
+    }
 
     const url = isEditing
       ? `${API_BASE_URL}/api/products/${data._id}`
@@ -228,10 +285,16 @@ export const ProductsManager = (props: Product[]) => {
             <div className="relative bg-gray-100">
               {/* Changed from object-cover to object-contain to show full image */}
               <img 
-                src={product.image} 
+                src={product.mainImage} 
                 alt={product.title} 
                 className="h-56 w-full object-contain bg-white"
               />
+              {/* Show image count badge */}
+              {product.additionalImages && product.additionalImages.length > 0 && (
+                <div className="absolute top-2 right-2 bg-blue-600 text-white text-xs px-2 py-1 rounded-full">
+                  +{product.additionalImages.length} more
+                </div>
+              )}
               <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <Button variant="outline" size="sm" onClick={() => openForm('products', product, true)} className="text-white bg-black/50 border-white/50 hover:bg-white hover:text-black" disabled={isLoading}>
                   <Edit className="w-4 h-4 mr-2" />
@@ -247,6 +310,9 @@ export const ProductsManager = (props: Product[]) => {
               <h3 className="text-lg font-bold text-gray-800 truncate">{product.title}</h3>
               <p className="text-sm text-gray-600 mt-1 h-10 overflow-hidden text-ellipsis">{product.description}</p>
               <p className="text-xl font-semibold text-blue-600">₹ {product.price}/-</p>
+              <div className="mt-2 text-xs text-gray-500">
+                {product.additionalImages?.length || 0} additional images
+              </div>
             </CardContent>
           </Card>
         ))}
@@ -268,7 +334,7 @@ export const ProductsManager = (props: Product[]) => {
       </div>
 
       <Dialog open={currentForm.type === 'products'} onOpenChange={(isOpen) => !isOpen && handleCancelForm()}>
-        <DialogContent className="sm:max-w-[650px] max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center">
               {currentForm.isEditing ? 'Edit Product' : 'Add New Product'}
@@ -331,14 +397,14 @@ export const ProductsManager = (props: Product[]) => {
               />
             </div>
 
-            {/* Image Field */}
+            {/* Main Image Field */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium">Product Image *</label>
-                {hasImageAttached && (
+                <label className="text-sm font-medium">Main Product Image *</label>
+                {mainImagePreview && (
                   <div className="flex items-center gap-1 text-sm font-medium text-green-600">
                     <CheckCircle className="w-4 h-4" />
-                    <span>Image attached</span>
+                    <span>Main image selected</span>
                   </div>
                 )}
               </div>
@@ -347,23 +413,23 @@ export const ProductsManager = (props: Product[]) => {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={handleFileChange}
+                  onChange={handleMainImageChange}
                   className="hidden"
-                  id="image-upload"
-                  ref={fileInputRef}
+                  id="main-image-upload"
+                  ref={mainFileInputRef}
                 />
                 <label
-                  htmlFor="image-upload"
+                  htmlFor="main-image-upload"
                   className="cursor-pointer flex flex-col items-center justify-center space-y-2"
                 >
-                  {hasImageAttached ? (
+                  {mainImagePreview ? (
                     <>
                       <ImageIcon className="w-8 h-8 text-green-500" />
                       <div className="text-center">
                         <p className="text-sm font-medium text-gray-700">
-                          ✓ {selectedFileName}
+                          ✓ Main image selected
                         </p>
-                        <p className="text-xs text-gray-500">Click to change image</p>
+                        <p className="text-xs text-gray-500">Click to change main image</p>
                       </div>
                     </>
                   ) : (
@@ -371,7 +437,7 @@ export const ProductsManager = (props: Product[]) => {
                       <Upload className="w-8 h-8 text-gray-400" />
                       <div className="text-center">
                         <p className="text-sm font-medium text-gray-700">
-                          Click to upload product image
+                          Click to upload main product image
                         </p>
                         <p className="text-xs text-gray-500">PNG, JPG, JPEG up to 10MB</p>
                       </div>
@@ -380,16 +446,16 @@ export const ProductsManager = (props: Product[]) => {
                 </label>
               </div>
 
-              {/* Show image preview at bottom */}
-              {imagePreview && (
+              {/* Show main image preview */}
+              {mainImagePreview && (
                 <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-medium text-gray-700">Image Preview:</p>
+                    <p className="text-sm font-medium text-gray-700">Main Image Preview:</p>
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      onClick={handleRemoveImage}
+                      onClick={handleRemoveMainImage}
                       className="h-6 w-6 p-0 hover:bg-red-50 hover:text-red-600"
                     >
                       <X className="w-3 h-3" />
@@ -397,36 +463,124 @@ export const ProductsManager = (props: Product[]) => {
                   </div>
                   <div className="flex items-center justify-center bg-white p-2 rounded border border-gray-200">
                     <img
-                      src={imagePreview}
-                      alt="Preview"
+                      src={mainImagePreview}
+                      alt="Main preview"
                       className="max-h-48 max-w-full rounded-md object-contain"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-2 text-center truncate">
-                    {selectedFileName}
-                  </p>
                 </div>
               )}
 
-              {/* Show existing image URL when editing */}
-              {currentForm.isEditing && currentForm.data.image && typeof currentForm.data.image === 'string' && !hasImageAttached && !imagePreview && (
+              {/* Show existing main image when editing */}
+              {currentForm.isEditing && !mainImagePreview && currentForm.data.mainImage && (
                 <div className="mt-2 p-3 bg-blue-50 rounded border border-blue-200">
                   <div className="flex items-center gap-2 mb-1">
                     <ImageIcon className="w-4 h-4 text-blue-600" />
-                    <p className="text-sm font-medium text-blue-800">Current image:</p>
+                    <p className="text-sm font-medium text-blue-800">Current main image:</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="bg-white p-1 rounded border">
                       <img 
-                        src={currentForm.data.image} 
+                        src={currentForm.data.mainImage} 
                         alt="Current product" 
-                        className="w-12 h-12 object-contain"
+                        className="w-20 h-20 object-contain"
                       />
                     </div>
                     <div>
-                      <p className="text-xs text-gray-600 truncate">{currentForm.data.image}</p>
-                      <p className="text-xs text-gray-500 mt-1">Upload a new image to replace the current one</p>
+                      <p className="text-xs text-gray-600">Upload a new image to replace</p>
+                      <p className="text-xs text-gray-500 mt-1">Main image is required</p>
                     </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Additional Images Field */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium">Additional Images (Optional)</label>
+                <span className="text-xs text-gray-500">
+                  {existingAdditionalImages.length + additionalImagesPreviews.length}/6
+                </span>
+              </div>
+              
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-500 transition-colors">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAdditionalImagesChange}
+                  className="hidden"
+                  id="additional-images-upload"
+                  ref={additionalFileInputRef}
+                  multiple
+                />
+                <label
+                  htmlFor="additional-images-upload"
+                  className="cursor-pointer flex flex-col items-center justify-center space-y-2"
+                >
+                  <Upload className="w-8 h-8 text-gray-400" />
+                  <div className="text-center">
+                    <p className="text-sm font-medium text-gray-700">
+                      Click to upload additional product images
+                    </p>
+                    <p className="text-xs text-gray-500">Max 6 images total. PNG, JPG, JPEG up to 10MB each</p>
+                  </div>
+                </label>
+              </div>
+
+              {/* Show existing additional images when editing */}
+              {existingAdditionalImages.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-gray-700 mb-2">Existing Additional Images:</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    {existingAdditionalImages.map((image, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={image}
+                          alt={`Additional ${index + 1}`}
+                          className="w-full h-24 object-cover rounded border border-gray-200"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleRemoveExistingAdditionalImage(index)}
+                          className="absolute top-1 right-1 h-6 w-6 p-0 bg-red-500 text-white hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    These images will be removed. Upload new ones to replace.
+                  </p>
+                </div>
+              )}
+
+              {/* Show new additional images previews */}
+              {additionalImagesPreviews.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-gray-700 mb-2">New Additional Images:</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    {additionalImagesPreviews.map((preview, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={preview}
+                          alt={`New ${index + 1}`}
+                          className="w-full h-24 object-cover rounded border border-gray-200"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleRemoveAdditionalImage(index)}
+                          className="absolute top-1 right-1 h-6 w-6 p-0 bg-red-500 text-white hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
