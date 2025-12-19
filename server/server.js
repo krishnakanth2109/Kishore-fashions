@@ -28,7 +28,8 @@ const allowedOrigins = [            // For Vite development
   'https://kishore-fashions-1.onrender.com/'  ,// Your deployed Netlify frontend
   'https://kishore-fashions-2z6j.onrender.com',
   "https://kishorfashions.netlify.app",
-  "http://kishorfashiontailoringclasses.com"
+  "https://kishorfashiontailoringclasses.com",
+  "https://www.kishorfashiontailoringclasses.com"
 ];
 
 const corsOptions = {

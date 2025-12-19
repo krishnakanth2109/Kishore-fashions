@@ -27,9 +27,17 @@ const About = () => {
 
   // Curated, high-quality images for the training environment
   const trainingImages = [
-    "http://3.bp.blogspot.com/-tWiLIo7X5rM/UcI2MQNZh7I/AAAAAAAAC5c/3UV0YYmGDYw/s1600/1019-14.jpg",
-    "https://kaurboutique.com/wp-content/uploads/2022/04/ulteration.png",
-    "https://enjoycouture.com/wp-content/uploads/2021/05/vignette-couture-entreprenariat-article-de-blog.jpg"
+    "https://image2url.com/images/1766068458632-5e04495f-d09e-4ac6-8e53-567b29d06d32.jpeg",
+    "https://image2url.com/images/1766068580623-6f118e09-3cbd-44f6-8181-0784e7b1067b.jpeg",
+    "https://image2url.com/images/1766069044987-8b73b233-c01e-4af7-aa8f-21666bf823a0.jpeg",
+    "https://image2url.com/images/1766068656435-3e86f2bc-dc72-4946-8372-7c3be6721df3.jpeg",
+    "https://image2url.com/images/1766068748336-000376d9-6ad9-46aa-8243-4e91703305c0.jpeg",
+    "https://image2url.com/images/1766068872328-8338fea8-bf4c-410e-a1dd-5cf0654c48c6.jpeg",
+    "https://image2url.com/images/1766069210435-2a231550-c431-4892-8c5b-90443ca901f2.jpeg",
+    "https://image2url.com/images/1766069253986-77cf81ad-11b9-4738-9aae-c55d8b90b980.jpeg",
+    "https://image2url.com/images/1766069682524-0b8486d4-e980-49df-ac85-2e5d33c40445.jpeg",
+
+ 
   ];
 
   // Fetch Dynamic Data

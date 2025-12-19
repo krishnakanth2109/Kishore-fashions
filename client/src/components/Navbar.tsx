@@ -12,10 +12,12 @@ const Navbar = () => {
   const navItems = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
+        { name: "Join Whatsapp Group", path: "https://chat.whatsapp.com/H8VY0jGKTvmAxs9cLZ944L" },
     { name: "Products", path: "/products" },
     { name: "Portfolio", path: "/portfolio" },
     { name: "Contact", path: "/contact" },
     { name: "Services", path: "/services" },
+
   ];
 
   const isActive = (path) => location.pathname === path;
