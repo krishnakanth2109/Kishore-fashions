@@ -25,7 +25,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 const allowedOrigins = [            // For Vite development
   'http://localhost:3000',                 // For Create React App development
   'http://localhost:8080',                 // <-- THE FIX: Added your specific local origin
-  'https://kishore-fashions-1.onrender.com/'  ,// Your deployed Netlify frontend
+  'https://kishore-fashions-1.onrender.com'  ,// Your deployed Netlify frontend
   'https://kishore-fashions-2z6j.onrender.com',
   "https://kishorfashions.netlify.app",
   "https://kishorfashiontailoringclasses.com",
